@@ -10,8 +10,7 @@ class redactFiles:
     def __init__(self):
         self.namesHoldingList = []
 
-    def redactNames(self, fileName):
-
+    def redactNames(self, fileName, directoryName):
         content = open(fileName, 'r').read()
         print("content:", content)
         content = content.strip()
@@ -39,4 +38,10 @@ class redactFiles:
                 namesHoldingList.append(' '.join([chunk[0] for chunk in entities]))
         for toReplaceNames in namesHoldingList:
             content = content.replace(toReplaceNames, "█"*len(toReplaceNames))
+        print("File Path:", directoryName+'/stat.txt')
+        # FilePathName = 'project1/'+directoryName+'/stat.txt'
+        writeToStatFile = open('project1/'+directoryName+'/stat.txt', mode="w")
+        writeToStatFile.write("******************** \t "+fileName+" \t ***********************")
+        writeToStatFile.write("\n Total Names Redacted: \t "+str(len(namesHoldingList)))
+        writeToStatFile.close()
         print("Final Content:", content)

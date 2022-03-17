@@ -1,5 +1,6 @@
 import argparse
-import glob
+import os
+import pathlib
 
 from redactor import redactFiles
 
@@ -8,17 +9,19 @@ def main(args):
     print("args:", args)
     filesList = args.input
     redactObj = redactFiles()
+    if args.stats:
+        if not pathlib.Path(args.stats+'/stat.txt').is_file():
+            try:
+                os.mkdir('project1/' + args.stats)
+            except OSError as dirErr:
+                print("Directory already exists. So, no need to create one.")
+
     for fileName in filesList:
         print("file Name:", fileName)
         if fileName == "requirements.txt":
             continue
         if args.names:
-            redactObj.redactNames(fileName)
-
-
-
-
-
+            redactObj.redactNames(fileName, args.stats)
 
 
 if __name__ == '__main__':
