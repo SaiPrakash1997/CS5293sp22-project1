@@ -9,40 +9,39 @@ from redactor import redactFiles
 
 def main(args):
     print("args:", args)
-    for input in args.input:
-        print("input:", input)
-        filesNameList = input.split(",")
-    print("Files in List before glob library:", filesNameList)
-    newFilesNameList = []
-    # for fileName in filesNameList:
-    #     print("File Name extension:", fileName)
-    #     print("file String Name:", glob.glob(fileName))
-    #     newFilesNameList.append(glob.glob(fileName))
-    # newFilesNameList = nltk.flatten(newFilesNameList)
-    print("Files List after glob library:", newFilesNameList)
-    redactObj = redactFiles()
-    content = ''
-    # if args.stats:
-    #     if not pathlib.Path(args.stats+'/stat.txt').is_file():
-    #         try:
-    #             os.mkdir('project1/' + args.stats)
-    #             open('project1/' + args.stats + '/stat.txt', mode="w")
-    #         except OSError as dirErr:
-    #             open('project1/' + args.stats + '/stat.txt', mode="w")
-    #             print("Directory already exists. So, no need to create one.")
-    #
-    # for fileName in newFilesNameList:
-    #     print("file Name:", fileName)
-    #     if fileName == "requirements.txt" or fileName == "stat.txt":
-    #         continue
-    #     if args.names:
-    #         content = redactObj.redactNames(fileName, args.stats)
-    #     if args.dates:
-    #         content = redactObj.redactDates(args.stats, content)
-    #     if args.phones:
-    #         content = redactObj.redactPhones(args.stats, content)
-    #     if args.genders:
-    #         content = redactObj.redactGenders(args.stats, content)
+    filesList = []
+    if args.input is None:
+        print("No input is passed")
+    else:
+        for extension in args.input:
+            print("File Name extension:", extension)
+            print("file String Name:", glob.glob(extension))
+            filesList.append(glob.glob(extension))
+        filesList = nltk.flatten(filesList)
+        print("Files List after glob library:", filesList)
+        redactObj = redactFiles()
+        content = ''
+        # if args.stats:
+        #     if not pathlib.Path(args.stats+'/stat.txt').is_file():
+        #         try:
+        #             os.mkdir('project1/' + args.stats)
+        #             open('project1/' + args.stats + '/stat.txt', mode="w")
+        #         except OSError as dirErr:
+        #             open('project1/' + args.stats + '/stat.txt', mode="w")
+        #             print("Directory already exists. So, no need to create one.")
+        #
+        # for fileName in newFilesNameList:
+        #     print("file Name:", fileName)
+        #     if fileName == "requirements.txt" or fileName == "stat.txt":
+        #         continue
+        #     if args.names:
+        #         content = redactObj.redactNames(fileName, args.stats)
+        #     if args.dates:
+        #         content = redactObj.redactDates(args.stats, content)
+        #     if args.phones:
+        #         content = redactObj.redactPhones(args.stats, content)
+        #     if args.genders:
+        #         content = redactObj.redactGenders(args.stats, content)
 
 
 if __name__ == '__main__':
