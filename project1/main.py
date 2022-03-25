@@ -14,6 +14,7 @@ def main(args):
         print("No input is passed")
     else:
         for extension in args.input:
+            print("*************************** Entered into else block ****************************")
             print("File Name extension:", extension)
             print("file String Name:", glob.glob(extension))
             filesList.append(glob.glob(extension))
