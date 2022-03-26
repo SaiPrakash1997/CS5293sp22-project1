@@ -1,6 +1,0 @@
-
-******************** 	 project1\stderr\stat.txt 	 ***********************
- Total Names Redacted: 	 0
- Total Dates Redacted: 	 0
- Total Phone Numbers Redacted:  0
- Total genders Redacted:  0

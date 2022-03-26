@@ -1,25 +1,29 @@
 import nltk
 import spacy
 from nltk.tree import Tree
+from nltk.corpus import wordnet
 import re
+import pyap
 nltk.download('averaged_perceptron_tagger')
 nltk.download('maxent_ne_chunker')
 nltk.download('words')
+nltk.download('wordnet')
+nltk.download('omw-1.4')
 
 
 class redactFiles:
     def __init__(self):
-        self.namesHoldingList = []
+        pass
 
-    def redactNames(self, fileName, directoryName):
+    def redactNames(self, directoryName, fileName, redactContents):
         content = open(fileName, 'r').read()
         print("content:", content)
         content = content.strip()
         sentenceList = nltk.sent_tokenize(content)
         print("sentence List:", sentenceList)
-        namesHoldingList = []
         nlp = spacy.blank("en")
         nlp = spacy.load('en_core_web_lg')
+        namesHoldingList = []
         for sentence in sentenceList:
             print("sentence:", sentence)
             doc = nlp(sentence)
@@ -28,7 +32,7 @@ class redactFiles:
                 print("token:", token, "label:", token.label_)
                 if token.label_ == 'PERSON':
                     namesHoldingList.append(token.text)
-        print(" Values in namesHoldingList:", namesHoldingList)
+        print(" Values in namesHoldingList selected by spacy library:", namesHoldingList)
         wordsList = nltk.tokenize.word_tokenize(content)
         print("words in list:", wordsList)
         tagList = nltk.pos_tag(wordsList)
@@ -38,19 +42,21 @@ class redactFiles:
         for entities in chunkedList:
             if type(entities) == Tree and entities.label() == 'PERSON':
                 namesHoldingList.append(' '.join([chunk[0] for chunk in entities]))
-        for toReplaceNames in namesHoldingList:
-            content = content.replace(toReplaceNames, "█"*len(toReplaceNames))
+        print("contents in the redactContent list:", namesHoldingList)
         print("File Path:", directoryName+'/stat.txt')
-        writeToStatFile = open('project1/'+directoryName+'/stat.txt', mode="a")
+        writeToStatFile = open(directoryName+'/stat.txt', mode="a")
         writeToStatFile.write("\n******************** \t "+fileName+" \t ***********************")
         writeToStatFile.write("\n Total Names Redacted: \t "+str(len(namesHoldingList)))
         writeToStatFile.close()
-        print("Final content after name redaction:", content)
-        return content
+        redactContents['names'] = namesHoldingList
+        return redactContents
 
-    def redactDates(self, directoryName, content):
+    def redactDates(self, directoryName, fileName, redactContents):
+        content = open(fileName, 'r').read()
+        tempHolder = []
         datesContainerLetters = []
         datesContainerNumbers = []
+        finalDatesContainer = []
         monthsContainer = ['january', 'January', 'February', 'february', 'March', 'march', 'April', 'april', 'May', 'may', 'June', 'june', 'July',
                   'july', 'August', 'august', 'September', 'september', 'October', 'october', 'November', 'november', 'december', 'December',
                   'jan', 'Jan', 'feb', 'Feb', 'mar', 'Mar', 'apr', 'Apr', 'may', 'May', 'jun', 'Jun', 'jul', 'Jul', 'aug', 'Aug', 'sep', 'Sep',
@@ -93,7 +99,6 @@ class redactFiles:
             content))
         print("String format dates in datesContainer:", datesContainerLetters)
         print("Number format dates in datesContainer:", datesContainerNumbers)
-        finalDatesContainer = []
         for temp in datesContainerLetters:
             print('temp:', temp)
             print("Value:", temp, "length:", len(temp))
@@ -112,29 +117,31 @@ class redactFiles:
         for toReplace in finalDatesContainer:
             toReplace = toReplace.strip()
             print("Value to be replaced:", toReplace)
-            content = content.replace(toReplace, "█"*len(toReplace))
+            tempHolder.append(toReplace)
         datesContainerNumbers = nltk.flatten(datesContainerNumbers)
         for toReplaceNumbers in datesContainerNumbers:
             toReplace = str(toReplaceNumbers)
             print("Value to be replaced:", toReplace)
-            content = content.replace(toReplace, "█"*len(toReplace))
+            tempHolder.append(toReplace)
         monthsInWords = nltk.tokenize.word_tokenize(content)
         print("months in list:", monthsInWords)
         matched = 0
-        for months in monthsInWords:
-            if months in monthsContainer:
-                print("Value matched:", months)
+        for month in monthsInWords:
+            if month in monthsContainer:
+                print("Value matched:", month)
                 matched += 1
-                content = content.replace(months, "█"*len(months))
-
-        writeToStatFile = open('project1/' + directoryName + '/stat.txt', mode="a")
+                tempHolder.append(month)
+        print("dates in the redactContent list:", tempHolder)
+        writeToStatFile = open(directoryName + '/stat.txt', mode="a")
         print("\n Total Dates Redacted: \t " + str(len(finalDatesContainer)+len(datesContainerNumbers)+matched))
         writeToStatFile.write("\n Total Dates Redacted: \t " + str(len(finalDatesContainer)+len(datesContainerNumbers)+matched))
         writeToStatFile.close()
-        print("content after date redaction:", content)
-        return content
+        redactContents['dates'] = tempHolder
+        return redactContents
 
-    def redactPhones(self, directoryName, content):
+    def redactPhones(self, directoryName, fileName, redactContents):
+        content = open(fileName, 'r').read()
+        tempHolder = []
         phonesList = []
         phonesSecondaryList = []
         phonesList.append(re.findall(
@@ -171,19 +178,62 @@ class redactFiles:
         print("Secondary Phone type values in list:", phonesSecondaryList)
         for primaryValue in primaryPhonesList:
             primaryValue = primaryValue.strip()
-            content = content.replace(primaryValue, "█"*len(primaryValue))
+            tempHolder.append(primaryValue)
         phonesSecondaryList = nltk.flatten(phonesSecondaryList)
         for secondaryValue in phonesSecondaryList:
-            content = content.replace(secondaryValue, "█"*len(secondaryValue))
-        writeToStatFile = open('project1/' + directoryName + '/stat.txt', mode="a")
+            tempHolder.append(secondaryValue)
+        print("phone numbers in the redactContent list:", tempHolder)
+        writeToStatFile = open(directoryName + '/stat.txt', mode="a")
         print("\n Total Phone Numbers Redacted:  " + str(len(primaryPhonesList)+len(phonesSecondaryList)))
         writeToStatFile.write(
             "\n Total Phone Numbers Redacted:  " + str(len(primaryPhonesList)+len(phonesSecondaryList)))
         writeToStatFile.close()
-        print("content after phones redaction:", content)
-        return content
+        redactContents['phones'] = tempHolder
+        print(f"Final phone values in tempHolder: {tempHolder}")
+        return redactContents
 
-    def redactGenders(self, directoryName, content):
+    def redactAddress(self, directoryName, fileName, redactContents):
+        content = open(fileName, 'r').read()
+        tempHolder = []
+        addressRedactList = pyap.parse(content, country="US")
+        for address in addressRedactList:
+            tempHolder.append(address)
+        writeToStatFile = open(directoryName + '/stat.txt', mode="a")
+        print("\n Number of address redacted:  " + str(len(tempHolder)))
+        writeToStatFile.write(
+            "\n Number of address redacted:  " + str(len(tempHolder)))
+        writeToStatFile.close()
+        redactContents['address'] = tempHolder
+        return redactContents
+
+    def redactConcept(self, directoryName, fileName, redactContents, concept):
+        synonyms = wordnet.synsets(concept)
+        conceptWords = []
+        tempHolder = []
+        for word in synonyms:
+            conceptWords.append(word.lemma_names())
+        conceptWords = nltk.flatten(conceptWords)
+        content = open(fileName, 'r').read()
+        sentenceList = nltk.sent_tokenize(content)
+        for sentence in sentenceList:
+            addToList = False
+            contentList = nltk.word_tokenize(sentence)
+            for word in contentList:
+                if word in conceptWords and addToList is False:
+                    addToList = True
+            if addToList:
+                tempHolder.append(sentence)
+        writeToStatFile = open(directoryName + '/stat.txt', mode="a")
+        print("\n Total concepts Redacted:  " + str(len(tempHolder)))
+        writeToStatFile.write(
+            "\n Total concepts Redacted:  " + str(len(tempHolder)))
+        writeToStatFile.close()
+        redactContents['concept'] = tempHolder
+        return redactContents
+
+    def redactGenders(self, directoryName, fileName, redactContents):
+        content = open(fileName, 'r').read()
+        tempHolder = []
         genderWords = ['he', 'him', 'his', 'male', 'man', 'men', 'He', 'Him', 'His', 'Male', 'Man', 'Men', 'HE', 'HIM', 'HIS', 'MALE', 'MAN', 'MEN', 'guy',
                        'spokesman', 'spokesperson', 'chairman', "he's", 'boy', 'boys', 'boyfriend', 'boyfriends', 'brother', 'brothers', 'dad', "dad's",
                        'dude', 'father', "father's", 'fiance', 'gentleman', 'gentlemen', 'god', 'grandfather', 'grandpa', 'grandson', 'groom', 'himself',
@@ -193,32 +243,60 @@ class redactFiles:
                        'Girl', 'girlfriend', 'Girlfriend', 'girlfriends', 'Girlfriends', 'girls', 'Girls', 'goddess', 'Goddess', 'granddaughter', 'Granddaughter',
                        'grandma', 'Grandma', 'grandmother', 'Grandmother', 'herself', 'Herself', 'lady', 'Lady', 'ladies', 'Ladies', 'Mom', 'mom', 'Mother', 'mother'
                        'niece', 'Niece', 'princess', 'queen', 'sister', 'Queen', 'Sister', 'wife', 'Wife', 'wives', 'Wives']
-        print("content:", content)
         genderWordsList = nltk.tokenize.word_tokenize(content)
         print("Words:", genderWordsList)
-        genderStatCount = 0
-        tempContent = ''
-        endSymbols = ['.', ',', '!', '?', ';', ':']
         for word in genderWordsList:
-            if word in genderWords and tempContent != '':
-                genderStatCount += 1
-                tempContent = tempContent + ' ' + "█"*len(word)
-            elif word in genderWords and tempContent == '':
-                genderStatCount += 1
-                tempContent = "█" * len(word)
-            elif tempContent == '':
-                tempContent = tempContent + word
-            elif tempContent != '' and word not in endSymbols:
-                tempContent = tempContent + ' ' + word
-            elif tempContent != '' and word in endSymbols:
-                tempContent = tempContent + word
-        writeToStatFile = open('project1/' + directoryName + '/stat.txt', mode="a")
-        print("\n Total genders Redacted:  " + str(genderStatCount))
+            if word in genderWords:
+                tempHolder.append(word)
+        writeToStatFile = open(directoryName + '/stat.txt', mode="a")
+        print("\n Total genders Redacted:  " + str(len(tempHolder)))
         writeToStatFile.write(
-            "\n Total genders Redacted:  " + str(genderStatCount))
+            "\n Total genders Redacted:  " + str(len(tempHolder)))
         writeToStatFile.close()
-        print("content after gender redaction:", tempContent)
-        return tempContent
+        redactContents['genders'] = tempHolder
+        return redactContents
+
+    def redactContent(self, args, fileName, redactContents):
+        content = open(fileName, 'r').read()
+        if args.concept:
+            toReplaceList = redactContents.get('concept')
+            for sentence in toReplaceList:
+                content = content.replace(sentence, "█" * len(sentence))
+        if args.names:
+            toReplaceList = redactContents.get('names')
+            for word in toReplaceList:
+                content = content.replace(word, "█" * len(word))
+        if args.dates:
+            toReplaceList = redactContents.get('dates')
+            for word in toReplaceList:
+                content = content.replace(word, "█" * len(word))
+        if args.phones:
+            toReplaceList = redactContents.get('phones')
+            for word in toReplaceList:
+                content = content.replace(word, "█" * len(word))
+        if args.address:
+            toReplaceList = redactContents.get('address')
+            for word in toReplaceList:
+                content = content.replace(word, "█" * len(word))
+        if args.genders:
+            tempContent = ''
+            toReplaceList = redactContents.get('genders')
+            endSymbols = ['.', ',', '!', '?', ';', ':']
+            genderWordsList = nltk.tokenize.word_tokenize(content)
+            for word in genderWordsList:
+                if word in toReplaceList and tempContent != '':
+                    tempContent = tempContent + ' ' + "█"*len(word)
+                elif word in toReplaceList and tempContent == '':
+                    tempContent = "█" * len(word)
+                elif tempContent == '':
+                    tempContent = tempContent + word
+                elif tempContent != '' and word not in endSymbols:
+                    tempContent = tempContent + ' ' + word
+                elif tempContent != '' and word in endSymbols:
+                    tempContent = tempContent + word
+            content = tempContent
+        return content
+
 
 
 
