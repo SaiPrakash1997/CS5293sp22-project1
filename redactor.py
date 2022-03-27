@@ -21,6 +21,7 @@ def redactor(args):
         print("Files List after glob library:", filesList)
         redactObj = redactFiles()
         if args.stats:
+            print(":::::::::::::::::::", pathlib.Path(args.stats+'/stat.txt').is_file())
             if not pathlib.Path(args.stats+'/stat.txt').is_file():
                 try:
                     os.mkdir(args.stats)
@@ -28,6 +29,9 @@ def redactor(args):
                 except OSError as dirErr:
                     open(args.stats + '/stat.txt', mode="w")
                     print("Directory already exists. So, no need to create one.")
+            else:
+                open(args.stats + '/stat.txt', mode="w")
+
 
         for fileName in filesList:
             redactContents = {}
@@ -54,12 +58,15 @@ def redactor(args):
                 if not pathlib.Path(args.output + fileName + '.redacted').is_file():
                     try:
                         os.mkdir(args.output)
-                        writeToRedactedFile = open(args.output + fileName + '.redacted', mode="w")
+                        writeToRedactedFile = open(args.output + fileName + '.redacted', mode="w", encoding='utf-8')
                         writeToRedactedFile.write(content)
                     except OSError as dirErr:
                         print("File already exists. So, writing redacted content to it.")
-                        writeToRedactedFile = open(args.output + fileName + '.redacted', mode="w")
+                        writeToRedactedFile = open(args.output + fileName + '.redacted', mode="w", encoding='utf-8')
                         writeToRedactedFile.write(content)
+                else:
+                    writeToRedactedFile = open(args.output + fileName + '.redacted', mode="w", encoding='utf-8')
+                    writeToRedactedFile.write(content)
 
 
 if __name__ == '__main__':
