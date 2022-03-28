@@ -5,6 +5,7 @@ from nltk.corpus import wordnet
 import re
 import pyap
 from commonregex import CommonRegex
+nltk.download('punkt')
 nltk.download('averaged_perceptron_tagger')
 nltk.download('maxent_ne_chunker')
 nltk.download('words')
