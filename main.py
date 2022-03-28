@@ -4,6 +4,7 @@ from nltk.tree import Tree
 from nltk.corpus import wordnet
 import re
 import pyap
+from commonregex import CommonRegex
 nltk.download('averaged_perceptron_tagger')
 nltk.download('maxent_ne_chunker')
 nltk.download('words')
@@ -15,13 +16,12 @@ class redactFiles:
     def __init__(self):
         pass
 
-    def redactNames(self, directoryName, fileName, redactContents):
+    def redactNames(self, fileName, redactContents):
         content = open(fileName, 'r').read()
         print("content:", content)
         content = content.strip()
         sentenceList = nltk.sent_tokenize(content)
         print("sentence List:", sentenceList)
-        nlp = spacy.blank("en")
         nlp = spacy.load('en_core_web_lg')
         namesHoldingList = []
         for sentence in sentenceList:
@@ -43,48 +43,97 @@ class redactFiles:
             if type(entities) == Tree and entities.label() == 'PERSON':
                 namesHoldingList.append(' '.join([chunk[0] for chunk in entities]))
         print("contents in the redactContent list:", namesHoldingList)
-        print("File Path:", directoryName+'/stat.txt')
-        writeToStatFile = open(directoryName+'/stat.txt', mode="a")
-        writeToStatFile.write("\n******************** \t "+fileName+" \t ***********************")
-        writeToStatFile.write("\n Total Names Redacted: \t "+str(len(namesHoldingList)))
-        writeToStatFile.close()
         redactContents['names'] = namesHoldingList
+        print("**************** names method ended **************************")
         return redactContents
 
-    def redactDates(self, directoryName, fileName, redactContents):
+    def redactDates(self, fileName, redactContents):
         content = open(fileName, 'r').read()
         tempHolder = []
         datesContainerLetters = []
         datesContainerNumbers = []
         finalDatesContainer = []
+        commaCase = []
         monthsContainer = ['january', 'January', 'February', 'february', 'March', 'march', 'April', 'april', 'May', 'may', 'June', 'june', 'July',
                   'july', 'August', 'august', 'September', 'september', 'October', 'october', 'November', 'november', 'december', 'December',
                   'jan', 'Jan', 'feb', 'Feb', 'mar', 'Mar', 'apr', 'Apr', 'may', 'May', 'jun', 'Jun', 'jul', 'Jul', 'aug', 'Aug', 'sep', 'Sep',
                   'oct', 'Oct', 'nov', 'Nov', 'dec', 'Dec']
+        # Wed, 9 Jan 2002
+        commaCase.append(re.findall(
+            r"([mM]onday?|[tT]uesday?|[wW]ednesday?|[tT]hrusday?|[fF]riday?|[sS]aturday?|[sS]unday?)(,)\s([\d]{1,2})\s([jJ]anuary?|[fF]ebruary?|[mM]arch?|[aA]pril?|[mM]ay?|[jJ]une?|[jJ]uly?|[aA]ugust?|[sS]eptember?|[oO]ctober?|[nN]ovember?|[dD]ecember?)\s([\d]{4})",
+            content))
+        commaCase.append(re.findall(
+            r"([mM]onday?|[tT]uesday?|[wW]ednesday?|[tT]hrusday?|[fF]riday?|[sS]aturday?|[sS]unday?)(,)\s([\d]{1,2})\s([jJ]an?|[fF]eb?|[mM]ar?|[aA]pr?|[mM]ay?|[jJ]un?|[jJ]ul?|[aA]ug?|[sS]ep?|[oO]ct?|[nN]ov?|[dD]ec?)\s([\d]{4})",
+            content))
+        commaCase.append(re.findall(
+            r"([mM]on?|[tT]ues?|[wW]ed?|[tT]hrus?|[fF]ri?|[sS]at?|[sS]un?)(,)\s([\d]{1,2})\s([jJ]anuary?|[fF]ebruary?|[mM]arch?|[aA]pril?|[mM]ay?|[jJ]une?|[jJ]uly?|[aA]ugust?|[sS]eptember?|[oO]ctober?|[nN]ovember?|[dD]ecember?)\s([\d]{4})",
+            content))
+        commaCase.append(re.findall(
+            r"([mM]on?|[tT]ues?|[wW]ed?|[tT]hrus?|[fF]ri?|[sS]at?|[sS]un?)(,)\s([\d]{1,2})\s([jJ]an?|[fF]eb?|[mM]ar?|[aA]pr?|[mM]ay?|[jJ]un?|[jJ]ul?|[aA]ug?|[sS]ep?|[oO]ct?|[nN]ov?|[dD]ec?)\s([\d]{4})",
+            content))
+        # Friday, November 02, 2001
+        commaCase.append(re.findall(
+            r"([mM]onday?|[tT]uesday?|[wW]ednesday?|[tT]hrusday?|[fF]riday?|[sS]aturday?|[sS]unday?)(,)\s([jJ]anuary?|[fF]ebruary?|[mM]arch?|[aA]pril?|[mM]ay?|[jJ]une?|[jJ]uly?|[aA]ugust?|[sS]eptember?|[oO]ctober?|[nN]ovember?|[dD]ecember?)\s([\d]{1,2})(,)\s([\d]{4})",
+            content))
+        commaCase.append(re.findall(
+            r"([mM]onday?|[tT]uesday?|[wW]ednesday?|[tT]hrusday?|[fF]riday?|[sS]aturday?|[sS]unday?)(,)\s([jJ]an?|[fF]eb?|[mM]ar?|[aA]pr?|[mM]ay?|[jJ]un?|[jJ]ul?|[aA]ug?|[sS]ep?|[oO]ct?|[nN]ov?|[dD]ec?)\s([\d]{1,2})(,)\s([\d]{4})",
+            content))
+        commaCase.append(re.findall(
+            r"([mM]on?|[tT]ues?|[wW]ed?|[tT]hrus?|[fF]ri?|[sS]at?|[sS]un?)(,)\s([jJ]anuary?|[fF]ebruary?|[mM]arch?|[aA]pril?|[mM]ay?|[jJ]une?|[jJ]uly?|[aA]ugust?|[sS]eptember?|[oO]ctober?|[nN]ovember?|[dD]ecember?)\s([\d]{1,2})(,)\s([\d]{4})",
+            content))
+        commaCase.append(re.findall(
+            r"([mM]on?|[tT]ues?|[wW]ed?|[tT]hrus?|[fF]ri?|[sS]at?|[sS]un?)(,)\s([jJ]an?|[fF]eb?|[mM]ar?|[aA]pr?|[mM]ay?|[jJ]un?|[jJ]ul?|[aA]ug?|[sS]ep?|[oO]ct?|[nN]ov?|[dD]ec?)\s([\d]{1,2})(,)\s([\d]{4})",
+            content))
+        # Friday 11/9/01
         datesContainerLetters.append(re.findall(
-            r"([\d]{1,2}.{2})\s([jJ]anuary?|[fF]ebruary?|[mM]arch?|[aA]pril?|[mM]ay?|[jJ]une?|[jJ]uly?|[aA]ugust?|[sS]eptember?|[oO]ctober?|[nN]ovember?|[dD]ecember?)\s([\d]{4})",
+            r"([mM]onday?|[tT]uesday?|[wW]ednesday?|[tT]hrusday?|[fF]riday?|[sS]aturday?|[sS]unday?)\s([\d]{1,2}/[\d]{1,2}/[\d]{4})",
             content))
         datesContainerLetters.append(re.findall(
-            r"([\d]{1,2}.{2})\s([jJ]an?|[fF]eb?|[mM]ar?|[aA]pr?|[mM]ay?|[jJ]un?|[jJ]ul?|[aA]ug?|[sS]ep?|[oO]ct?|[nN]ov?|[dD]ec?)\s([\d]{4})",
+            r"([mM]onday?|[tT]uesday?|[wW]ednesday?|[tT]hrusday?|[fF]riday?|[sS]aturday?|[sS]unday?)\s([\d]{4}/[\d]{1,2}/[\d]{1,2})",
             content))
         datesContainerLetters.append(re.findall(
-            r"([jJ]anuary?|[fF]ebruary?|[mM]arch?|[aA]pril?|[mM]ay?|[jJ]une?|[jJ]uly?|[aA]ugust?|[sS]eptember?|[oO]ctober?|[nN]ovember?|[dD]ecember?)\s([\d]{1,2}.{2},)\s([\d]{4})",
+            r"([mM]onday?|[tT]uesday?|[wW]ednesday?|[tT]hrusday?|[fF]riday?|[sS]aturday?|[sS]unday?)\s([\d]{1,2}-[\d]{1,2}-[\d]{4})",
             content))
         datesContainerLetters.append(re.findall(
-            r"([jJ]an?|[fF]eb?|[mM]ar?|[aA]pr?|[mM]ay?|[jJ]un?|[jJ]ul?|[aA]ug?|[sS]ep?|[oO]ct?|[nN]ov?|[dD]ec?)\s([\d]{1,2}.{2},)\s([\d]{4})",
+            r"([mM]onday?|[tT]uesday?|[wW]ednesday?|[tT]hrusday?|[fF]riday?|[sS]aturday?|[sS]unday?)\s([\d]{4}-[\d]{1,2}-[\d]{1,2})",
             content))
         datesContainerLetters.append(re.findall(
-            r"([\d]{1,2}.{2})\s([jJ]anuary?|[fF]ebruary?|[mM]arch?|[aA]pril?|[mM]ay?|[jJ]une?|[jJ]uly?|[aA]ugust?|[sS]eptember?|[oO]ctober?|[nN]ovember?|[dD]ecember?)",
+            r"([mM]onday?|[tT]uesday?|[wW]ednesday?|[tT]hrusday?|[fF]riday?|[sS]aturday?|[sS]unday?)\s([\d]{1,2}/[\d]{1,2}/[\d]{2})",
             content))
         datesContainerLetters.append(re.findall(
-            r"([jJ]anuary?|[fF]ebruary?|[mM]arch?|[aA]pril?|[mM]ay?|[jJ]une?|[jJ]uly?|[aA]ugust?|[sS]eptember?|[oO]ctober?|[nN]ovember?|[dD]ecember?)\s([\d]{1,2}.{2})",
+            r"([mM]onday?|[tT]uesday?|[wW]ednesday?|[tT]hrusday?|[fF]riday?|[sS]aturday?|[sS]unday?)\s([\d]{2}/[\d]{1,2}/[\d]{1,2})",
             content))
         datesContainerLetters.append(re.findall(
-            r"([jJ]an?|[fF]eb?|[mM]ar?|[aA]pr?|[mM]ay?|[jJ]un?|[jJ]ul?|[aA]ug?|[sS]ep?|[oO]ct?|[nN]ov?|[dD]ec?)\s([\d]{1,2}.{2})",
+            r"([mM]onday?|[tT]uesday?|[wW]ednesday?|[tT]hrusday?|[fF]riday?|[sS]aturday?|[sS]unday?)\s([\d]{1,2}-[\d]{1,2}-[\d]{2})",
             content))
         datesContainerLetters.append(re.findall(
-            r"([\d]{1,2}.{2})\s([jJ]an?|[fF]eb?|[mM]ar?|[aA]pr?|[mM]ay?|[jJ]un?|[jJ]ul?|[aA]ug?|[sS]ep?|[oO]ct?|[nN]ov?|[dD]ec?)",
+            r"([mM]onday?|[tT]uesday?|[wW]ednesday?|[tT]hrusday?|[fF]riday?|[sS]aturday?|[sS]unday?)\s([\d]{2}-[\d]{1,2}-[\d]{1,2})",
             content))
+        datesContainerLetters.append(re.findall(
+            r"([mM]on?|[tT]ues?|[wW]ed?|[tT]hrus?|[fF]ri?|[sS]at?|[sS]un?)\s([\d]{1,2}/[\d]{1,2}/[\d]{4})",
+            content))
+        datesContainerLetters.append(re.findall(
+            r"([mM]on?|[tT]ues?|[wW]ed?|[tT]hrus?|[fF]ri?|[sS]at?|[sS]un?)\s([\d]{4}/[\d]{1,2}/[\d]{1,2})",
+            content))
+        datesContainerLetters.append(re.findall(
+            r"([mM]on?|[tT]ues?|[wW]ed?|[tT]hrus?|[fF]ri?|[sS]at?|[sS]un?)\s([\d]{1,2}-[\d]{1,2}-[\d]{4})",
+            content))
+        datesContainerLetters.append(re.findall(
+            r"([mM]on?|[tT]ues?|[wW]ed?|[tT]hrus?|[fF]ri?|[sS]at?|[sS]un?)\s([\d]{4}-[\d]{1,2}-[\d]{1,2})",
+            content))
+        datesContainerLetters.append(re.findall(
+            r"([mM]on?|[tT]ues?|[wW]ed?|[tT]hrus?|[fF]ri?|[sS]at?|[sS]un?)\s([\d]{1,2}/[\d]{1,2}/[\d]{2})",
+            content))
+        datesContainerLetters.append(re.findall(
+            r"([mM]on?|[tT]ues?|[wW]ed?|[tT]hrus?|[fF]ri?|[sS]at?|[sS]un?)\s([\d]{2}/[\d]{1,2}/[\d]{1,2})",
+            content))
+        datesContainerLetters.append(re.findall(
+            r"([mM]on?|[tT]ues?|[wW]ed?|[tT]hrus?|[fF]ri?|[sS]at?|[sS]un?)\s([\d]{1,2}-[\d]{1,2}-[\d]{2})",
+            content))
+        datesContainerLetters.append(re.findall(
+            r"([mM]on?|[tT]ues?|[wW]ed?|[tT]hrus?|[fF]ri?|[sS]at?|[sS]un?)\s([\d]{2}-[\d]{1,2}-[\d]{1,2})",
+            content))
+        # 11/2/01
         datesContainerNumbers.append(re.findall(
             r"[\d]{1,2}/[\d]{1,2}/[\d]{4}",
             content))
@@ -97,8 +146,70 @@ class redactFiles:
         datesContainerNumbers.append(re.findall(
             r"[\d]{4}-[\d]{1,2}-[\d]{1,2}",
             content))
+        datesContainerNumbers.append(re.findall(
+            r"[\d]{1,2}/[\d]{1,2}/[\d]{2}",
+            content))
+        datesContainerNumbers.append(re.findall(
+            r"[\d]{2}/[\d]{1,2}/[\d]{1,2}",
+            content))
+        datesContainerNumbers.append(re.findall(
+            r"[\d]{1,2}-[\d]{1,2}-[\d]{2}",
+            content))
+        datesContainerNumbers.append(re.findall(
+            r"[\d]{2}-[\d]{1,2}-[\d]{1,2}",
+            content))
+        # January 1, 2002
+        datesContainerLetters.append(re.findall(
+            r"([\d]{1,2})\s([jJ]anuary?|[fF]ebruary?|[mM]arch?|[aA]pril?|[mM]ay?|[jJ]une?|[jJ]uly?|[aA]ugust?|[sS]eptember?|[oO]ctober?|[nN]ovember?|[dD]ecember?)\s([\d]{4})",
+            content))
+        datesContainerLetters.append(re.findall(
+            r"([\d]{1,2})\s([jJ]an?|[fF]eb?|[mM]ar?|[aA]pr?|[mM]ay?|[jJ]un?|[jJ]ul?|[aA]ug?|[sS]ep?|[oO]ct?|[nN]ov?|[dD]ec?)\s([\d]{4})",
+            content))
+        datesContainerLetters.append(re.findall(
+            r"([jJ]anuary?|[fF]ebruary?|[mM]arch?|[aA]pril?|[mM]ay?|[jJ]une?|[jJ]uly?|[aA]ugust?|[sS]eptember?|[oO]ctober?|[nN]ovember?|[dD]ecember?)\s([\d]{1,2},)\s([\d]{4})",
+            content))
+        datesContainerLetters.append(re.findall(
+            r"([jJ]an?|[fF]eb?|[mM]ar?|[aA]pr?|[mM]ay?|[jJ]un?|[jJ]ul?|[aA]ug?|[sS]ep?|[oO]ct?|[nN]ov?|[dD]ec?)\s([\d]{1,2},)\s([\d]{4})",
+            content))
+        # December 29
+        datesContainerLetters.append(re.findall(
+            r"([\d]{1,2})\s([jJ]anuary?|[fF]ebruary?|[mM]arch?|[aA]pril?|[mM]ay?|[jJ]une?|[jJ]uly?|[aA]ugust?|[sS]eptember?|[oO]ctober?|[nN]ovember?|[dD]ecember?)",
+            content))
+        datesContainerLetters.append(re.findall(
+            r"([jJ]anuary?|[fF]ebruary?|[mM]arch?|[aA]pril?|[mM]ay?|[jJ]une?|[jJ]uly?|[aA]ugust?|[sS]eptember?|[oO]ctober?|[nN]ovember?|[dD]ecember?)\s([\d]{1,2})",
+            content))
+        datesContainerLetters.append(re.findall(
+            r"([jJ]an?|[fF]eb?|[mM]ar?|[aA]pr?|[mM]ay?|[jJ]un?|[jJ]ul?|[aA]ug?|[sS]ep?|[oO]ct?|[nN]ov?|[dD]ec?)\s([\d]{1,2})",
+            content))
+        datesContainerLetters.append(re.findall(
+            r"([\d]{1,2})\s([jJ]an?|[fF]eb?|[mM]ar?|[aA]pr?|[mM]ay?|[jJ]un?|[jJ]ul?|[aA]ug?|[sS]ep?|[oO]ct?|[nN]ov?|[dD]ec?)",
+            content))
+        # Remaining date formats which are not covered in above regular expressions.
+        parsed_text = CommonRegex(content)
+        print("parsed_text:", parsed_text.dates)
+        for toReplace in parsed_text.dates:
+            print("Value to be replaced:", toReplace)
+            tempHolder.append(toReplace)
         print("String format dates in datesContainer:", datesContainerLetters)
         print("Number format dates in datesContainer:", datesContainerNumbers)
+        print("Comma case date formats:", commaCase)
+        tempList = []
+        for listValue in commaCase:
+            print('temp:', listValue)
+            print("Value:", listValue, "length:", len(listValue))
+            if len(listValue) == 0:
+                del listValue
+                continue
+            for data in listValue:
+                temp = ""
+                print(data)
+                for tupleValue in data:
+                    print(tupleValue)
+                    if tupleValue != ",":
+                        temp = temp + " " + tupleValue
+                    else:
+                        temp = temp + tupleValue
+                tempList.append(temp.strip())
         for temp in datesContainerLetters:
             print('temp:', temp)
             print("Value:", temp, "length:", len(temp))
@@ -114,6 +225,10 @@ class redactFiles:
                 print("Values appended:", valueToAppend)
                 finalDatesContainer.append(valueToAppend)
         print("String format in finalDatesContainer:", finalDatesContainer)
+        for toReplace in tempList:
+            toReplace = toReplace.strip()
+            print("Value to be replaced:", toReplace)
+            tempHolder.append(toReplace)
         for toReplace in finalDatesContainer:
             toReplace = toReplace.strip()
             print("Value to be replaced:", toReplace)
@@ -132,14 +247,11 @@ class redactFiles:
                 matched += 1
                 tempHolder.append(month)
         print("dates in the redactContent list:", tempHolder)
-        writeToStatFile = open(directoryName + '/stat.txt', mode="a")
-        print("\n Total Dates Redacted: \t " + str(len(finalDatesContainer)+len(datesContainerNumbers)+matched))
-        writeToStatFile.write("\n Total Dates Redacted: \t " + str(len(finalDatesContainer)+len(datesContainerNumbers)+matched))
-        writeToStatFile.close()
         redactContents['dates'] = tempHolder
+        print("**************** dates method ended **************************")
         return redactContents
 
-    def redactPhones(self, directoryName, fileName, redactContents):
+    def redactPhones(self, fileName, redactContents):
         content = open(fileName, 'r').read()
         tempHolder = []
         phonesList = []
@@ -162,6 +274,8 @@ class redactFiles:
             r"([\d]{3}[\d]{3}[\d]{4})", content))
         phonesSecondaryList.append(re.findall(
             r"([\d]{3}[-][\d]{3}[-][\d]{4})", content))
+        phonesSecondaryList.append(re.findall(
+            r"([(][\d]{3}[)]\s[\d]{3}[-][\d]{4})", content))
         print("Selected phone Values:", phonesList)
         primaryPhonesList = []
         for data in phonesList:
@@ -181,32 +295,27 @@ class redactFiles:
             tempHolder.append(primaryValue)
         phonesSecondaryList = nltk.flatten(phonesSecondaryList)
         for secondaryValue in phonesSecondaryList:
-            tempHolder.append(secondaryValue)
-        print("phone numbers in the redactContent list:", tempHolder)
-        writeToStatFile = open(directoryName + '/stat.txt', mode="a")
-        print("\n Total Phone Numbers Redacted:  " + str(len(primaryPhonesList)+len(phonesSecondaryList)))
-        writeToStatFile.write(
-            "\n Total Phone Numbers Redacted:  " + str(len(primaryPhonesList)+len(phonesSecondaryList)))
-        writeToStatFile.close()
+            if len(secondaryValue) == 10:
+                if secondaryValue[0] == 0 or secondaryValue[0] == 1:
+                    continue
+            else:
+                tempHolder.append(secondaryValue)
         redactContents['phones'] = tempHolder
         print(f"Final phone values in tempHolder: {tempHolder}")
+        print("**************** phones method ended **************************")
         return redactContents
 
-    def redactAddress(self, directoryName, fileName, redactContents):
+    def redactAddress(self, fileName, redactContents):
         content = open(fileName, 'r').read()
         tempHolder = []
         addressRedactList = pyap.parse(content, country="US")
         for address in addressRedactList:
-            tempHolder.append(address)
-        writeToStatFile = open(directoryName + '/stat.txt', mode="a")
-        print("\n Number of address redacted:  " + str(len(tempHolder)))
-        writeToStatFile.write(
-            "\n Number of address redacted:  " + str(len(tempHolder)))
-        writeToStatFile.close()
+            tempHolder.append(str(address))
         redactContents['address'] = tempHolder
+        print("**************** address method ended **************************")
         return redactContents
 
-    def redactConcept(self, directoryName, fileName, redactContents, concept):
+    def redactConcept(self, fileName, redactContents, concept):
         synonyms = wordnet.synsets(concept)
         conceptWords = []
         tempHolder = []
@@ -223,15 +332,11 @@ class redactFiles:
                     addToList = True
             if addToList:
                 tempHolder.append(sentence)
-        writeToStatFile = open(directoryName + '/stat.txt', mode="a")
-        print("\n Total concepts Redacted:  " + str(len(tempHolder)))
-        writeToStatFile.write(
-            "\n Total concepts Redacted:  " + str(len(tempHolder)))
-        writeToStatFile.close()
         redactContents['concept'] = tempHolder
+        print("**************** concept method ended **************************")
         return redactContents
 
-    def redactGenders(self, directoryName, fileName, redactContents):
+    def redactGenders(self, fileName, redactContents):
         content = open(fileName, 'r').read()
         tempHolder = []
         genderWords = ['he', 'him', 'his', 'male', 'man', 'men', 'He', 'Him', 'His', 'Male', 'Man', 'Men', 'HE', 'HIM', 'HIS', 'MALE', 'MAN', 'MEN', 'guy',
@@ -248,45 +353,73 @@ class redactFiles:
         for word in genderWordsList:
             if word in genderWords:
                 tempHolder.append(word)
-        writeToStatFile = open(directoryName + '/stat.txt', mode="a")
-        print("\n Total genders Redacted:  " + str(len(tempHolder)))
-        writeToStatFile.write(
-            "\n Total genders Redacted:  " + str(len(tempHolder)))
-        writeToStatFile.close()
         redactContents['genders'] = tempHolder
+        print("**************** gender method ended **************************")
         return redactContents
 
     def redactContent(self, args, fileName, redactContents):
         content = open(fileName, 'r').read()
         if args.concept:
+            count = 0
             toReplaceList = redactContents.get('concept')
             for sentence in toReplaceList:
+                count += 1
                 content = content.replace(sentence, "█" * len(sentence))
+            writeToStatFile = open(args.stats + '/stat.txt', mode="a")
+            writeToStatFile.write("\n******************** \t " + fileName + " \t ***********************")
+            print("\n Total concepts Redacted:  " + str(count))
+            writeToStatFile.write("\n Total concepts Redacted:  " + str(count))
         if args.names:
             toReplaceList = redactContents.get('names')
+            count = 0
             for word in toReplaceList:
-                content = content.replace(word, "█" * len(word))
+                if word in content:
+                    count += 1
+                    content = content.replace(word, "█" * len(word))
+            writeToStatFile = open(args.stats + '/stat.txt', mode="a")
+            writeToStatFile.write("\n Total Names Redacted: \t " + str(count))
         if args.dates:
+            count = 0
             toReplaceList = redactContents.get('dates')
             for word in toReplaceList:
-                content = content.replace(word, "█" * len(word))
+                if word in content:
+                    count += 1
+                    content = content.replace(word, "█" * len(word))
+            writeToStatFile = open(args.stats + '/stat.txt', mode="a")
+            print("\n Total Dates Redacted: \t " + str(count))
+            writeToStatFile.write("\n Total Dates Redacted: \t " + str(count))
         if args.phones:
             toReplaceList = redactContents.get('phones')
+            count = 0
             for word in toReplaceList:
-                content = content.replace(word, "█" * len(word))
+                if word in content:
+                    count += 1
+                    content = content.replace(word, "█" * len(word))
+            writeToStatFile = open(args.stats + '/stat.txt', mode="a")
+            print("\n Total Phone Numbers Redacted:  " + str(count))
+            writeToStatFile.write("\n Total Phone Numbers Redacted:  " + str(count))
         if args.address:
             toReplaceList = redactContents.get('address')
+            count = 0
             for word in toReplaceList:
-                content = content.replace(word, "█" * len(word))
+                if word in content:
+                    count += 1
+                    content = content.replace(word, "█" * len(word))
+            writeToStatFile = open(args.stats + '/stat.txt', mode="a")
+            print("\n Number of address redacted:  " + str(count))
+            writeToStatFile.write("\n Number of address redacted:  " + str(count))
         if args.genders:
+            count = 0
             tempContent = ''
             toReplaceList = redactContents.get('genders')
             endSymbols = ['.', ',', '!', '?', ';', ':']
             genderWordsList = nltk.tokenize.word_tokenize(content)
             for word in genderWordsList:
                 if word in toReplaceList and tempContent != '':
+                    count += 1
                     tempContent = tempContent + ' ' + "█"*len(word)
                 elif word in toReplaceList and tempContent == '':
+                    count += 1
                     tempContent = "█" * len(word)
                 elif tempContent == '':
                     tempContent = tempContent + word
@@ -294,6 +427,10 @@ class redactFiles:
                     tempContent = tempContent + ' ' + word
                 elif tempContent != '' and word in endSymbols:
                     tempContent = tempContent + word
+            writeToStatFile = open(args.stats + '/stat.txt', mode="a")
+            print("\n Total genders Redacted:  " + str(count))
+            writeToStatFile.write("\n Total genders Redacted:  " + str(count))
+            writeToStatFile.close()
             content = tempContent
         return content
 

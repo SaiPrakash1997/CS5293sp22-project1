@@ -1,15 +1,8 @@
 
-******************** 	 test.txt 	 ***********************
- Total Names Redacted: 	 7
- Total Dates Redacted: 	 27
- Total Phone Numbers Redacted:  11
- Number of address redacted:  0
- Total concepts Redacted:  1
- Total genders Redacted:  7
-******************** 	 testcsv.txt 	 ***********************
- Total Names Redacted: 	 2
- Total Dates Redacted: 	 0
- Total Phone Numbers Redacted:  0
- Number of address redacted:  0
+******************** 	 rawdata3.txt 	 ***********************
  Total concepts Redacted:  0
- Total genders Redacted:  1
+ Total Names Redacted: 	 18
+ Total Dates Redacted: 	 1
+ Total Phone Numbers Redacted:  2
+ Number of address redacted:  0
+ Total genders Redacted:  3

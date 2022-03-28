@@ -21,7 +21,6 @@ def redactor(args):
         print("Files List after glob library:", filesList)
         redactObj = redactFiles()
         if args.stats:
-            print(":::::::::::::::::::", pathlib.Path(args.stats+'/stat.txt').is_file())
             if not pathlib.Path(args.stats+'/stat.txt').is_file():
                 try:
                     os.mkdir(args.stats)
@@ -32,7 +31,6 @@ def redactor(args):
             else:
                 open(args.stats + '/stat.txt', mode="w")
 
-
         for fileName in filesList:
             redactContents = {}
             print("*************************************************************************************************")
@@ -40,17 +38,18 @@ def redactor(args):
             if fileName == "requirements.txt" or fileName == "project1/stderr/stat.txt":
                 continue
             if args.names:
-                redactContents = redactObj.redactNames(args.stats, fileName, redactContents)
+                redactContents = redactObj.redactNames(fileName, redactContents)
             if args.dates:
-                redactContents = redactObj.redactDates(args.stats, fileName, redactContents)
+                redactContents = redactObj.redactDates(fileName, redactContents)
             if args.phones:
-                redactContents = redactObj.redactPhones(args.stats, fileName, redactContents)
+                redactContents = redactObj.redactPhones(fileName, redactContents)
             if args.address:
-                redactContents = redactObj.redactAddress(args.stats, fileName, redactContents)
+                redactContents = redactObj.redactAddress(fileName, redactContents)
             if args.concept:
-                redactContents = redactObj.redactConcept(args.stats, fileName, redactContents, args.concept)
+                redactContents = redactObj.redactConcept(fileName, redactContents, args.concept)
             if args.genders:
-                redactContents = redactObj.redactGenders(args.stats, fileName, redactContents)
+                redactContents = redactObj.redactGenders(fileName, redactContents)
+            print("*****************************************************************************************************")
             print("values before redaction starts:", redactContents)
             content = redactObj.redactContent(args, fileName, redactContents)
             print(f"Final redacted content for {fileName}: {content}")
@@ -61,7 +60,7 @@ def redactor(args):
                         writeToRedactedFile = open(args.output + fileName + '.redacted', mode="w", encoding='utf-8')
                         writeToRedactedFile.write(content)
                     except OSError as dirErr:
-                        print("File already exists. So, writing redacted content to it.")
+                        print(f"File already exists. So, writing redacted content to it. Error:{dirErr}")
                         writeToRedactedFile = open(args.output + fileName + '.redacted', mode="w", encoding='utf-8')
                         writeToRedactedFile.write(content)
                 else:
