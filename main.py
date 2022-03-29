@@ -4,7 +4,6 @@ from nltk.tree import Tree
 from nltk.corpus import wordnet
 import re
 import pyap
-from commonregex import CommonRegex
 nltk.download('punkt')
 nltk.download('averaged_perceptron_tagger')
 nltk.download('maxent_ne_chunker')
@@ -51,14 +50,10 @@ class redactFiles:
     def redactDates(self, fileName, redactContents):
         content = open(fileName, 'r').read()
         tempHolder = []
+        commaCase = []
         datesContainerLetters = []
         datesContainerNumbers = []
         finalDatesContainer = []
-        commaCase = []
-        monthsContainer = ['january', 'January', 'February', 'february', 'March', 'march', 'April', 'april', 'May', 'may', 'June', 'june', 'July',
-                  'july', 'August', 'august', 'September', 'september', 'October', 'october', 'November', 'november', 'december', 'December',
-                  'jan', 'Jan', 'feb', 'Feb', 'mar', 'Mar', 'apr', 'Apr', 'may', 'May', 'jun', 'Jun', 'jul', 'Jul', 'aug', 'Aug', 'sep', 'Sep',
-                  'oct', 'Oct', 'nov', 'Nov', 'dec', 'Dec']
         # Wed, 9 Jan 2002
         commaCase.append(re.findall(
             r"([mM]onday?|[tT]uesday?|[wW]ednesday?|[tT]hrusday?|[fF]riday?|[sS]aturday?|[sS]unday?)(,)\s([\d]{1,2})\s([jJ]anuary?|[fF]ebruary?|[mM]arch?|[aA]pril?|[mM]ay?|[jJ]une?|[jJ]uly?|[aA]ugust?|[sS]eptember?|[oO]ctober?|[nN]ovember?|[dD]ecember?)\s([\d]{4})",
@@ -185,12 +180,17 @@ class redactFiles:
         datesContainerLetters.append(re.findall(
             r"([\d]{1,2})\s([jJ]an?|[fF]eb?|[mM]ar?|[aA]pr?|[mM]ay?|[jJ]un?|[jJ]ul?|[aA]ug?|[sS]ep?|[oO]ct?|[nN]ov?|[dD]ec?)",
             content))
-        # Remaining date formats which are not covered in above regular expressions.
-        parsed_text = CommonRegex(content)
-        print("parsed_text:", parsed_text.dates)
-        for toReplace in parsed_text.dates:
-            print("Value to be replaced:", toReplace)
-            tempHolder.append(toReplace)
+        sentenceList = nltk.sent_tokenize(content)
+        print("sentence List:", sentenceList)
+        nlp = spacy.load('en_core_web_lg')
+        for sentence in sentenceList:
+            print("sentence:", sentence)
+            doc = nlp(sentence)
+            print("doc:", doc)
+            for token in doc.ents:
+                print("token:", token, "label:", token.label_)
+                if token.label_ == 'DATE':
+                    datesContainerNumbers.append(token.text)
         print("String format dates in datesContainer:", datesContainerLetters)
         print("Number format dates in datesContainer:", datesContainerNumbers)
         print("Comma case date formats:", commaCase)
@@ -226,6 +226,11 @@ class redactFiles:
                 print("Values appended:", valueToAppend)
                 finalDatesContainer.append(valueToAppend)
         print("String format in finalDatesContainer:", finalDatesContainer)
+        datesContainerNumbers = nltk.flatten(datesContainerNumbers)
+        for toReplaceNumbers in datesContainerNumbers:
+            toReplace = str(toReplaceNumbers)
+            print("Value to be replaced:", toReplace)
+            tempHolder.append(toReplace)
         for toReplace in tempList:
             toReplace = toReplace.strip()
             print("Value to be replaced:", toReplace)
@@ -234,19 +239,6 @@ class redactFiles:
             toReplace = toReplace.strip()
             print("Value to be replaced:", toReplace)
             tempHolder.append(toReplace)
-        datesContainerNumbers = nltk.flatten(datesContainerNumbers)
-        for toReplaceNumbers in datesContainerNumbers:
-            toReplace = str(toReplaceNumbers)
-            print("Value to be replaced:", toReplace)
-            tempHolder.append(toReplace)
-        monthsInWords = nltk.tokenize.word_tokenize(content)
-        print("months in list:", monthsInWords)
-        matched = 0
-        for month in monthsInWords:
-            if month in monthsContainer:
-                print("Value matched:", month)
-                matched += 1
-                tempHolder.append(month)
         print("dates in the redactContent list:", tempHolder)
         redactContents['dates'] = tempHolder
         print("**************** dates method ended **************************")
@@ -312,19 +304,32 @@ class redactFiles:
         addressRedactList = pyap.parse(content, country="US")
         for address in addressRedactList:
             tempHolder.append(str(address))
+        # sentenceList = nltk.sent_tokenize(content)
+        # print("sentence List:", sentenceList)
+        # nlp = spacy.load('en_core_web_lg')
+        # for sentence in sentenceList:
+        #     print("sentence:", sentence)
+        #     doc = nlp(sentence)
+        #     print("doc:", doc)
+        #     for token in doc.ents:
+        #         print("token:", token, "label:", token.label_)
+        #         if token.label_ == 'GPE' or token.label_ == 'LOC':
+        #             tempHolder.append(token.text)
         redactContents['address'] = tempHolder
         print("**************** address method ended **************************")
         return redactContents
 
-    def redactConcept(self, fileName, redactContents, concept):
+    def redactConcept(self, fileName, concept):
         synonyms = wordnet.synsets(concept)
+        print(f"Synonyms for {concept}: {synonyms}")
         conceptWords = []
-        tempHolder = []
+        resultList = []
         for word in synonyms:
             conceptWords.append(word.lemma_names())
         conceptWords = nltk.flatten(conceptWords)
         content = open(fileName, 'r').read()
         sentenceList = nltk.sent_tokenize(content)
+        print("sentenceList:", sentenceList)
         for sentence in sentenceList:
             addToList = False
             contentList = nltk.word_tokenize(sentence)
@@ -332,10 +337,10 @@ class redactFiles:
                 if word in conceptWords and addToList is False:
                     addToList = True
             if addToList:
-                tempHolder.append(sentence)
-        redactContents['concept'] = tempHolder
+                resultList.append(sentence)
         print("**************** concept method ended **************************")
-        return redactContents
+        print("resultList:", resultList)
+        return resultList
 
     def redactGenders(self, fileName, redactContents):
         content = open(fileName, 'r').read()
@@ -406,6 +411,17 @@ class redactFiles:
                 if word in content:
                     count += 1
                     content = content.replace(word, "█" * len(word))
+            if count == 0 and len(toReplaceList) > 0:
+                exceptionalCase = []
+                for word in toReplaceList:
+                    print("word:", word)
+                    exceptionalCase.append(word.split(","))
+                exceptionalCase = nltk.flatten(exceptionalCase)
+                for word in exceptionalCase:
+                    word = word.strip()
+                    if word in content:
+                        content = content.replace(word, "█" * len(word))
+                count = len(toReplaceList)
             writeToStatFile = open(args.stats + '/stat.txt', mode="a")
             print("\n Number of address redacted:  " + str(count))
             writeToStatFile.write("\n Number of address redacted:  " + str(count))
