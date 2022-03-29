@@ -10,10 +10,11 @@ from main import redactFiles
 def redactor(args):
     print("args:", args)
     filesList = []
+    flattenFilesList = nltk.flatten(args.input)
     if args.input is None:
         print("No input is passed")
     else:
-        for extension in args.input:
+        for extension in flattenFilesList:
             print("File Name extension:", extension)
             print("file String Name:", glob.glob(extension))
             filesList.append(glob.glob(extension))
@@ -35,7 +36,7 @@ def redactor(args):
             redactContents = {}
             print("*************************************************************************************************")
             print("file Name:", fileName)
-            if fileName == "requirements.txt" or fileName == "project1/stderr/stat.txt":
+            if fileName == "requirements.txt" or fileName == "stderr/stat.txt" or fileName == "stderr\\stat.txt":
                 continue
             if args.names:
                 redactContents = redactObj.redactNames(fileName, redactContents)
@@ -46,7 +47,13 @@ def redactor(args):
             if args.address:
                 redactContents = redactObj.redactAddress(fileName, redactContents)
             if args.concept:
-                redactContents = redactObj.redactConcept(fileName, redactContents, args.concept)
+                concepts = nltk.flatten(args.concept)
+                resultList = []
+                for concept in concepts:
+                    print("concept:", concept)
+                    resultList.append(redactObj.redactConcept(fileName, concept))
+                resultList = nltk.flatten(resultList)
+                redactContents['concept'] = resultList
             if args.genders:
                 redactContents = redactObj.redactGenders(fileName, redactContents)
             print("*****************************************************************************************************")
@@ -70,13 +77,13 @@ def redactor(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("--input", help="Enter type of files to be read", nargs="+", required=True)
+    parser.add_argument("--input", help="Enter type of files to be read", action="append", nargs="+", required=True)
     parser.add_argument("--names", help="if you want names to be redacted", action="store_true")
     parser.add_argument("--dates",  help="if you want dates to be redacted", action="store_true")
     parser.add_argument("--phones",  help="if you want phones to be redacted", action="store_true")
     parser.add_argument("--genders",  help="if you want genders to be redacted", action="store_true")
     parser.add_argument("--address",  help="if you want address to be redacted", action="store_true")
-    parser.add_argument("--concept",  help="if you want any concept to be redacted", type=str)
+    parser.add_argument("--concept",  help="if you want any concept to be redacted", action="append", nargs="+")
     parser.add_argument("--output", help="Specify the folder name to store redacted files")
     parser.add_argument("--stats", help="Stats")
     args = parser.parse_args()

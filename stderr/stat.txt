@@ -1,8 +1,2 @@
 
-******************** 	 rawdata3.txt 	 ***********************
- Total concepts Redacted:  0
- Total Names Redacted: 	 18
- Total Dates Redacted: 	 1
- Total Phone Numbers Redacted:  2
- Number of address redacted:  0
- Total genders Redacted:  3
+ Total Dates Redacted: 	 6
