@@ -38,26 +38,26 @@ def redactor(args):
             print("file Name:", fileName)
             if fileName == "requirements.txt" or fileName == "stderr/stat.txt" or fileName == "stderr\\stat.txt":
                 continue
-            if args.names:
-                redactContents = redactObj.redactNames(fileName, redactContents)
-            if args.dates:
-                redactContents = redactObj.redactDates(fileName, redactContents)
-            if args.phones:
-                redactContents = redactObj.redactPhones(fileName, redactContents)
-            if args.address:
-                redactContents = redactObj.redactAddress(fileName, redactContents)
-            if args.concept:
-                concepts = nltk.flatten(args.concept)
-                resultList = []
-                for concept in concepts:
-                    print("concept:", concept)
-                    resultList.append(redactObj.redactConcept(fileName, concept))
-                resultList = nltk.flatten(resultList)
-                redactContents['concept'] = resultList
+            # if args.names:
+            #     redactContents = redactObj.redactNames(fileName, redactContents)
+            # if args.dates:
+            #     redactContents = redactObj.redactDates(fileName, redactContents)
+            # if args.phones:
+            #     redactContents = redactObj.redactPhones(fileName, redactContents)
+            # if args.address:
+            #     redactContents = redactObj.redactAddress(fileName, redactContents)
+            # if args.concept:
+            #     concepts = nltk.flatten(args.concept)
+            #     resultList = []
+            #     for concept in concepts:
+            #         print("concept:", concept)
+            #         resultList.append(redactObj.redactConcept(fileName, concept))
+            #     resultList = nltk.flatten(resultList)
+            #     redactContents['concept'] = resultList
             if args.genders:
                 redactContents = redactObj.redactGenders(fileName, redactContents)
-            print("*****************************************************************************************************")
-            print("values before redaction starts:", redactContents)
+            # print("*****************************************************************************************************")
+            # print("values before redaction starts:", redactContents)
             content = redactObj.redactContent(args, fileName, redactContents)
             print(f"Final redacted content for {fileName}: {content}")
             if args.output:

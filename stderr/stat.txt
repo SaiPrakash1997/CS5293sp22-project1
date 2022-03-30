@@ -1,2 +1,3 @@
 
- Total Dates Redacted: 	 6
+******************** 	 rawdata3.txt 	 ***********************
+ Total genders Redacted:  4

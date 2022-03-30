@@ -8,6 +8,8 @@ argparse = "*"
 nlp = "*"
 spacy = "*"
 nltk = "*"
+dateparser = "*"
+datefinder = "*"
 
 [dev-packages]
 

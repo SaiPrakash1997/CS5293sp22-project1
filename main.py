@@ -50,34 +50,33 @@ class redactFiles:
     def redactDates(self, fileName, redactContents):
         content = open(fileName, 'r').read()
         tempHolder = []
-        commaCase = []
+        scenario1 = []
         datesContainerLetters = []
         datesContainerNumbers = []
-        finalDatesContainer = []
         # Wed, 9 Jan 2002
-        commaCase.append(re.findall(
+        scenario1.append(re.findall(
             r"([mM]onday?|[tT]uesday?|[wW]ednesday?|[tT]hrusday?|[fF]riday?|[sS]aturday?|[sS]unday?)(,)\s([\d]{1,2})\s([jJ]anuary?|[fF]ebruary?|[mM]arch?|[aA]pril?|[mM]ay?|[jJ]une?|[jJ]uly?|[aA]ugust?|[sS]eptember?|[oO]ctober?|[nN]ovember?|[dD]ecember?)\s([\d]{4})",
             content))
-        commaCase.append(re.findall(
+        scenario1.append(re.findall(
             r"([mM]onday?|[tT]uesday?|[wW]ednesday?|[tT]hrusday?|[fF]riday?|[sS]aturday?|[sS]unday?)(,)\s([\d]{1,2})\s([jJ]an?|[fF]eb?|[mM]ar?|[aA]pr?|[mM]ay?|[jJ]un?|[jJ]ul?|[aA]ug?|[sS]ep?|[oO]ct?|[nN]ov?|[dD]ec?)\s([\d]{4})",
             content))
-        commaCase.append(re.findall(
+        scenario1.append(re.findall(
             r"([mM]on?|[tT]ues?|[wW]ed?|[tT]hrus?|[fF]ri?|[sS]at?|[sS]un?)(,)\s([\d]{1,2})\s([jJ]anuary?|[fF]ebruary?|[mM]arch?|[aA]pril?|[mM]ay?|[jJ]une?|[jJ]uly?|[aA]ugust?|[sS]eptember?|[oO]ctober?|[nN]ovember?|[dD]ecember?)\s([\d]{4})",
             content))
-        commaCase.append(re.findall(
+        scenario1.append(re.findall(
             r"([mM]on?|[tT]ues?|[wW]ed?|[tT]hrus?|[fF]ri?|[sS]at?|[sS]un?)(,)\s([\d]{1,2})\s([jJ]an?|[fF]eb?|[mM]ar?|[aA]pr?|[mM]ay?|[jJ]un?|[jJ]ul?|[aA]ug?|[sS]ep?|[oO]ct?|[nN]ov?|[dD]ec?)\s([\d]{4})",
             content))
         # Friday, November 02, 2001
-        commaCase.append(re.findall(
+        scenario1.append(re.findall(
             r"([mM]onday?|[tT]uesday?|[wW]ednesday?|[tT]hrusday?|[fF]riday?|[sS]aturday?|[sS]unday?)(,)\s([jJ]anuary?|[fF]ebruary?|[mM]arch?|[aA]pril?|[mM]ay?|[jJ]une?|[jJ]uly?|[aA]ugust?|[sS]eptember?|[oO]ctober?|[nN]ovember?|[dD]ecember?)\s([\d]{1,2})(,)\s([\d]{4})",
             content))
-        commaCase.append(re.findall(
+        scenario1.append(re.findall(
             r"([mM]onday?|[tT]uesday?|[wW]ednesday?|[tT]hrusday?|[fF]riday?|[sS]aturday?|[sS]unday?)(,)\s([jJ]an?|[fF]eb?|[mM]ar?|[aA]pr?|[mM]ay?|[jJ]un?|[jJ]ul?|[aA]ug?|[sS]ep?|[oO]ct?|[nN]ov?|[dD]ec?)\s([\d]{1,2})(,)\s([\d]{4})",
             content))
-        commaCase.append(re.findall(
+        scenario1.append(re.findall(
             r"([mM]on?|[tT]ues?|[wW]ed?|[tT]hrus?|[fF]ri?|[sS]at?|[sS]un?)(,)\s([jJ]anuary?|[fF]ebruary?|[mM]arch?|[aA]pril?|[mM]ay?|[jJ]une?|[jJ]uly?|[aA]ugust?|[sS]eptember?|[oO]ctober?|[nN]ovember?|[dD]ecember?)\s([\d]{1,2})(,)\s([\d]{4})",
             content))
-        commaCase.append(re.findall(
+        scenario1.append(re.findall(
             r"([mM]on?|[tT]ues?|[wW]ed?|[tT]hrus?|[fF]ri?|[sS]at?|[sS]un?)(,)\s([jJ]an?|[fF]eb?|[mM]ar?|[aA]pr?|[mM]ay?|[jJ]un?|[jJ]ul?|[aA]ug?|[sS]ep?|[oO]ct?|[nN]ov?|[dD]ec?)\s([\d]{1,2})(,)\s([\d]{4})",
             content))
         # Friday 11/9/01
@@ -193,9 +192,13 @@ class redactFiles:
                     datesContainerNumbers.append(token.text)
         print("String format dates in datesContainer:", datesContainerLetters)
         print("Number format dates in datesContainer:", datesContainerNumbers)
-        print("Comma case date formats:", commaCase)
-        tempList = []
-        for listValue in commaCase:
+        print("Comma case date formats:", scenario1)
+        datesContainerNumbers = nltk.flatten(datesContainerNumbers)
+        for toReplaceNumbers in datesContainerNumbers:
+            toReplace = str(toReplaceNumbers)
+            print("Value to be replaced:", toReplace)
+            tempHolder.append(toReplace)
+        for listValue in scenario1:
             print('temp:', listValue)
             print("Value:", listValue, "length:", len(listValue))
             if len(listValue) == 0:
@@ -210,7 +213,7 @@ class redactFiles:
                         temp = temp + " " + tupleValue
                     else:
                         temp = temp + tupleValue
-                tempList.append(temp.strip())
+                tempHolder.append(temp.strip())
         for temp in datesContainerLetters:
             print('temp:', temp)
             print("Value:", temp, "length:", len(temp))
@@ -224,22 +227,8 @@ class redactFiles:
                     print('tupleValue:', tupleValue)
                     valueToAppend = (valueToAppend + tupleValue)+" "
                 print("Values appended:", valueToAppend)
-                finalDatesContainer.append(valueToAppend)
-        print("String format in finalDatesContainer:", finalDatesContainer)
-        datesContainerNumbers = nltk.flatten(datesContainerNumbers)
-        for toReplaceNumbers in datesContainerNumbers:
-            toReplace = str(toReplaceNumbers)
-            print("Value to be replaced:", toReplace)
-            tempHolder.append(toReplace)
-        for toReplace in tempList:
-            toReplace = toReplace.strip()
-            print("Value to be replaced:", toReplace)
-            tempHolder.append(toReplace)
-        for toReplace in finalDatesContainer:
-            toReplace = toReplace.strip()
-            print("Value to be replaced:", toReplace)
-            tempHolder.append(toReplace)
-        print("dates in the redactContent list:", tempHolder)
+                print("After stripping value of spaces:", valueToAppend.strip())
+                tempHolder.append(valueToAppend.strip())
         redactContents['dates'] = tempHolder
         print("**************** dates method ended **************************")
         return redactContents
@@ -304,17 +293,17 @@ class redactFiles:
         addressRedactList = pyap.parse(content, country="US")
         for address in addressRedactList:
             tempHolder.append(str(address))
-        # sentenceList = nltk.sent_tokenize(content)
-        # print("sentence List:", sentenceList)
-        # nlp = spacy.load('en_core_web_lg')
-        # for sentence in sentenceList:
-        #     print("sentence:", sentence)
-        #     doc = nlp(sentence)
-        #     print("doc:", doc)
-        #     for token in doc.ents:
-        #         print("token:", token, "label:", token.label_)
-        #         if token.label_ == 'GPE' or token.label_ == 'LOC':
-        #             tempHolder.append(token.text)
+        sentenceList = nltk.sent_tokenize(content)
+        print("sentence List:", sentenceList)
+        nlp = spacy.load('en_core_web_lg')
+        for sentence in sentenceList:
+            print("sentence:", sentence)
+            doc = nlp(sentence)
+            print("doc:", doc)
+            for token in doc.ents:
+                print("token:", token, "label:", token.label_)
+                if token.label_ == 'GPE' or token.label_ == 'LOC':
+                    tempHolder.append(token.text)
         redactContents['address'] = tempHolder
         print("**************** address method ended **************************")
         return redactContents
@@ -365,14 +354,14 @@ class redactFiles:
 
     def redactContent(self, args, fileName, redactContents):
         content = open(fileName, 'r').read()
+        writeToStatFile = open(args.stats + '/stat.txt', mode="a")
+        writeToStatFile.write("\n******************** \t " + fileName + " \t ***********************")
         if args.concept:
             count = 0
             toReplaceList = redactContents.get('concept')
             for sentence in toReplaceList:
                 count += 1
                 content = content.replace(sentence, "█" * len(sentence))
-            writeToStatFile = open(args.stats + '/stat.txt', mode="a")
-            writeToStatFile.write("\n******************** \t " + fileName + " \t ***********************")
             print("\n Total concepts Redacted:  " + str(count))
             writeToStatFile.write("\n Total concepts Redacted:  " + str(count))
         if args.names:
@@ -382,7 +371,6 @@ class redactFiles:
                 if word in content:
                     count += 1
                     content = content.replace(word, "█" * len(word))
-            writeToStatFile = open(args.stats + '/stat.txt', mode="a")
             writeToStatFile.write("\n Total Names Redacted: \t " + str(count))
         if args.dates:
             count = 0
@@ -391,7 +379,6 @@ class redactFiles:
                 if word in content:
                     count += 1
                     content = content.replace(word, "█" * len(word))
-            writeToStatFile = open(args.stats + '/stat.txt', mode="a")
             print("\n Total Dates Redacted: \t " + str(count))
             writeToStatFile.write("\n Total Dates Redacted: \t " + str(count))
         if args.phones:
@@ -401,7 +388,6 @@ class redactFiles:
                 if word in content:
                     count += 1
                     content = content.replace(word, "█" * len(word))
-            writeToStatFile = open(args.stats + '/stat.txt', mode="a")
             print("\n Total Phone Numbers Redacted:  " + str(count))
             writeToStatFile.write("\n Total Phone Numbers Redacted:  " + str(count))
         if args.address:
@@ -422,33 +408,21 @@ class redactFiles:
                     if word in content:
                         content = content.replace(word, "█" * len(word))
                 count = len(toReplaceList)
-            writeToStatFile = open(args.stats + '/stat.txt', mode="a")
             print("\n Number of address redacted:  " + str(count))
             writeToStatFile.write("\n Number of address redacted:  " + str(count))
         if args.genders:
             count = 0
-            tempContent = ''
             toReplaceList = redactContents.get('genders')
-            endSymbols = ['.', ',', '!', '?', ';', ':']
-            genderWordsList = nltk.tokenize.word_tokenize(content)
-            for word in genderWordsList:
-                if word in toReplaceList and tempContent != '':
+            print("content before redaction starts for genders:", content)
+            for toReplace in toReplaceList:
+                if toReplace in content:
                     count += 1
-                    tempContent = tempContent + ' ' + "█"*len(word)
-                elif word in toReplaceList and tempContent == '':
-                    count += 1
-                    tempContent = "█" * len(word)
-                elif tempContent == '':
-                    tempContent = tempContent + word
-                elif tempContent != '' and word not in endSymbols:
-                    tempContent = tempContent + ' ' + word
-                elif tempContent != '' and word in endSymbols:
-                    tempContent = tempContent + word
-            writeToStatFile = open(args.stats + '/stat.txt', mode="a")
+                    content = re.sub(toReplace + "\s", "█"*len(toReplace) + " ", content)
+                    content = re.sub("\W"+toReplace+"\W", " "+"█"*len(toReplace)+" ", content)
+                    content = re.sub("\W" + toReplace + "\W", " " + "█"*len(toReplace), content)
             print("\n Total genders Redacted:  " + str(count))
             writeToStatFile.write("\n Total genders Redacted:  " + str(count))
-            writeToStatFile.close()
-            content = tempContent
+        writeToStatFile.close()
         return content
 
 
