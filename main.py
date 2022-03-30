@@ -419,7 +419,7 @@ class redactFiles:
                     count += 1
                     content = re.sub(toReplace + "\s", "█"*len(toReplace) + " ", content)
                     content = re.sub("\W"+toReplace+"\W", " "+"█"*len(toReplace)+" ", content)
-                    content = re.sub("\W" + toReplace + "\W", " " + "█"*len(toReplace), content)
+                    content = re.sub("\s" + toReplace + "\W", " " + "█"*len(toReplace), content)
             print("\n Total genders Redacted:  " + str(count))
             writeToStatFile.write("\n Total genders Redacted:  " + str(count))
         writeToStatFile.close()
