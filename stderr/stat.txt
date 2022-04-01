@@ -1,3 +1,23 @@
 
 ******************** 	 rawdata3.txt 	 ***********************
  Total genders Redacted:  4
+******************** 	 rawdata3.txt 	 ***********************
+******************** 	 rawdata3.txt 	 ***********************
+ Total concepts Redacted:  0
+ Total Names Redacted: 	 0
+ Total Dates Redacted: 	 0
+ Total Phone Numbers Redacted:  0
+******************** 	 rawdata3.txt 	 ***********************
+ Total concepts Redacted:  0
+ Total Names Redacted: 	 0
+ Total Dates Redacted: 	 0
+ Total Phone Numbers Redacted:  0
+ Number of address redacted:  0
+ Total genders Redacted:  0
+******************** 	 requirements.txt 	 ***********************
+ Total concepts Redacted:  0
+ Total Names Redacted: 	 0
+ Total Dates Redacted: 	 0
+ Total Phone Numbers Redacted:  0
+ Number of address redacted:  0
+ Total genders Redacted:  0
