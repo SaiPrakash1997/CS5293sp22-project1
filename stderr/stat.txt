@@ -6,3 +6,10 @@
  Total Phone Numbers Redacted:  0
  Number of address redacted:  0
  Total genders Redacted:  0
+******************** 	 inputFiles\rawdata6.txt 	 ***********************
+ Total concepts Redacted:  0
+ Total Names Redacted: 	 8
+ Total Dates Redacted: 	 8
+ Total Phone Numbers Redacted:  1
+ Number of address redacted:  0
+ Total genders Redacted:  1

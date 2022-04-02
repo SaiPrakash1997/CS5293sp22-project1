@@ -62,6 +62,15 @@ def redactor(args):
             content = redactObj.redactContent(args, fileName, redactContents)
             print(f"Final redacted content for {fileName}: {content}")
             if args.output:
+                tempFileName = ''
+                for i in range(len(fileName)-1, -1, -1):
+                    if fileName[i] == '/' or fileName[i] == '\\':
+                        break
+                    tempFileName = tempFileName + fileName[i]
+                fileName = ''
+                for i in range(len(tempFileName)-1, -1, -1):
+                    fileName = fileName+tempFileName[i]
+                print("File Name:", fileName)
                 if not pathlib.Path(args.output + fileName + '.redacted').is_file():
                     try:
                         os.mkdir(args.output)
