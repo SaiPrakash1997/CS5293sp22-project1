@@ -17,6 +17,7 @@ class redactFiles:
         pass
 
     def redactNames(self, fileName, redactContents):
+        print("******************** redactNames Method *****************************")
         content = open(fileName, 'r').read()
         print("content:", content)
         content = content.strip()
@@ -42,17 +43,21 @@ class redactFiles:
         for entities in chunkedList:
             if type(entities) == Tree and entities.label() == 'PERSON':
                 namesHoldingList.append(' '.join([chunk[0] for chunk in entities]))
-        print("contents in the redactContent list:", namesHoldingList)
+        print(" Result from redactNames:", namesHoldingList)
         redactContents['names'] = namesHoldingList
         print("**************** names method ended **************************")
         return redactContents
 
     def redactDates(self, fileName, redactContents):
         content = open(fileName, 'r').read()
+        print("******************** redactDates Method *****************************")
         tempHolder = []
         scenario1 = []
         datesContainerLetters = []
         datesContainerNumbers = []
+        redundentValues = ['Monday,', 'monday,', 'mon,', 'Mon,', 'Tuesday,', 'tuesday,', 'Wednesday,', 'wednesday,', 'Wed,', 'wed,', 'Thursday,'
+                           'thursday,', 'thurs,', 'Thurs,', 'Friday,', 'friday,', 'Fri,', 'fri,', 'Saturday,', 'saturday,', 'Sat,', 'sat,'
+                           'Sunday,', 'sunday,', 'Sun,', 'sun,']
         # Wed, 9 Jan 2002
         scenario1.append(re.findall(
             r"([mM]onday?|[tT]uesday?|[wW]ednesday?|[tT]hrusday?|[fF]riday?|[sS]aturday?|[sS]unday?)(,)\s([\d]{1,2})\s([jJ]anuary?|[fF]ebruary?|[mM]arch?|[aA]pril?|[mM]ay?|[jJ]une?|[jJ]uly?|[aA]ugust?|[sS]eptember?|[oO]ctober?|[nN]ovember?|[dD]ecember?)\s([\d]{4})",
@@ -190,14 +195,13 @@ class redactFiles:
                 print("token:", token, "label:", token.label_)
                 if token.label_ == 'DATE':
                     datesContainerNumbers.append(token.text)
-        print("String format dates in datesContainer:", datesContainerLetters)
-        print("Number format dates in datesContainer:", datesContainerNumbers)
-        print("Comma case date formats:", scenario1)
         datesContainerNumbers = nltk.flatten(datesContainerNumbers)
+        print("Number format dates in datesContainer:", datesContainerNumbers)
         for toReplaceNumbers in datesContainerNumbers:
             toReplace = str(toReplaceNumbers)
             print("Value to be replaced:", toReplace)
             tempHolder.append(toReplace)
+        print("Comma case date formats:", scenario1)
         for listValue in scenario1:
             print('temp:', listValue)
             print("Value:", listValue, "length:", len(listValue))
@@ -214,6 +218,7 @@ class redactFiles:
                     else:
                         temp = temp + tupleValue
                 tempHolder.append(temp.strip())
+        print("String format dates in datesContainer:", datesContainerLetters)
         for temp in datesContainerLetters:
             print('temp:', temp)
             print("Value:", temp, "length:", len(temp))
@@ -229,12 +234,16 @@ class redactFiles:
                 print("Values appended:", valueToAppend)
                 print("After stripping value of spaces:", valueToAppend.strip())
                 tempHolder.append(valueToAppend.strip())
+        for redundent in redundentValues:
+            tempHolder.append(redundent)
         redactContents['dates'] = tempHolder
+        print("Result from redactDates method:", tempHolder)
         print("**************** dates method ended **************************")
         return redactContents
 
     def redactPhones(self, fileName, redactContents):
         content = open(fileName, 'r').read()
+        print("******************** redactPhones Method *****************************")
         tempHolder = []
         phonesList = []
         phonesSecondaryList = []
@@ -258,7 +267,6 @@ class redactFiles:
             r"([\d]{3}[-][\d]{3}[-][\d]{4})", content))
         phonesSecondaryList.append(re.findall(
             r"([(][\d]{3}[)]\s[\d]{3}[-][\d]{4})", content))
-        print("Selected phone Values:", phonesList)
         primaryPhonesList = []
         for data in phonesList:
             print("value selected in phonesList:", data)
@@ -271,11 +279,11 @@ class redactFiles:
                 print("value adding before list:", temp)
                 primaryPhonesList.append(temp)
         print("Primary Phone type values in list:", primaryPhonesList)
-        print("Secondary Phone type values in list:", phonesSecondaryList)
         for primaryValue in primaryPhonesList:
             primaryValue = primaryValue.strip()
             tempHolder.append(primaryValue)
         phonesSecondaryList = nltk.flatten(phonesSecondaryList)
+        print("Secondary Phone type values in list:", phonesSecondaryList)
         for secondaryValue in phonesSecondaryList:
             if len(secondaryValue) == 10:
                 if secondaryValue[0] == 0 or secondaryValue[0] == 1:
@@ -283,32 +291,24 @@ class redactFiles:
             else:
                 tempHolder.append(secondaryValue)
         redactContents['phones'] = tempHolder
-        print(f"Final phone values in tempHolder: {tempHolder}")
+        print(f"Result from redactPhones method: {tempHolder}")
         print("**************** phones method ended **************************")
         return redactContents
 
     def redactAddress(self, fileName, redactContents):
         content = open(fileName, 'r').read()
+        print("******************** redactAddress Method *****************************")
         tempHolder = []
         addressRedactList = pyap.parse(content, country="US")
         for address in addressRedactList:
             tempHolder.append(str(address))
-        sentenceList = nltk.sent_tokenize(content)
-        print("sentence List:", sentenceList)
-        nlp = spacy.load('en_core_web_lg')
-        for sentence in sentenceList:
-            print("sentence:", sentence)
-            doc = nlp(sentence)
-            print("doc:", doc)
-            for token in doc.ents:
-                print("token:", token, "label:", token.label_)
-                if token.label_ == 'GPE' or token.label_ == 'LOC':
-                    tempHolder.append(token.text)
+        print(f"Result from redactAddress method: {tempHolder}")
         redactContents['address'] = tempHolder
         print("**************** address method ended **************************")
         return redactContents
 
     def redactConcept(self, fileName, concept):
+        print("******************** redactConcept Method *****************************")
         synonyms = wordnet.synsets(concept)
         print(f"Synonyms for {concept}: {synonyms}")
         conceptWords = []
@@ -332,6 +332,7 @@ class redactFiles:
         return resultList
 
     def redactGenders(self, fileName, redactContents):
+        print("******************** redactGenders Method *****************************")
         content = open(fileName, 'r').read()
         tempHolder = []
         genderWords = ['he', 'him', 'his', 'male', 'man', 'men', 'He', 'Him', 'His', 'Male', 'Man', 'Men', 'HE', 'HIM', 'HIS', 'MALE', 'MAN', 'MEN', 'guy',
@@ -353,6 +354,7 @@ class redactFiles:
         return redactContents
 
     def redactContent(self, args, fileName, redactContents):
+        print("******************** redactContent Method *****************************")
         content = open(fileName, 'r').read()
         writeToStatFile = open(args.stats + '/stat.txt', mode="a")
         writeToStatFile.write("\n******************** \t " + fileName + " \t ***********************")
@@ -375,8 +377,11 @@ class redactFiles:
         if args.dates:
             count = 0
             toReplaceList = redactContents.get('dates')
+            print("Values in replace list:", toReplaceList)
             for word in toReplaceList:
+                print("Word:", word)
                 if word in content:
+                    print("In content")
                     count += 1
                     content = content.replace(word, "█" * len(word))
             print("\n Total Dates Redacted: \t " + str(count))

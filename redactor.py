@@ -53,6 +53,7 @@ def redactor(args):
                     print("concept:", concept)
                     resultList.append(redactObj.redactConcept(fileName, concept))
                 resultList = nltk.flatten(resultList)
+                print(f"Result from redactConcept method: {resultList}")
                 redactContents['concept'] = resultList
             if args.genders:
                 redactContents = redactObj.redactGenders(fileName, redactContents)
