@@ -9,6 +9,7 @@ nlp = "*"
 spacy = "*"
 nltk = "*"
 pytest = "*"
+pyap = "*"
 
 [dev-packages]
 

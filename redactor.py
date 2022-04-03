@@ -12,7 +12,7 @@ def redactor(args):
     filesList = []
     flattenFilesList = nltk.flatten(args.input)
     if args.input is None:
-        print("No input is passed")
+        print("No input file extensions are passed.")
     else:
         for extension in flattenFilesList:
             print("File Name extension:", extension)
@@ -21,17 +21,6 @@ def redactor(args):
         filesList = nltk.flatten(filesList)
         print("Files List after glob library:", filesList)
         redactObj = redactFiles()
-        if args.stats:
-            if not pathlib.Path(args.stats+'/stat.txt').is_file():
-                try:
-                    os.mkdir(args.stats)
-                    open(args.stats + '/stat.txt', mode="w")
-                except OSError as dirErr:
-                    open(args.stats + '/stat.txt', mode="w")
-                    print("Directory already exists. So, no need to create one.")
-            else:
-                open(args.stats + '/stat.txt', mode="w")
-
         for fileName in filesList:
             redactContents = {}
             print("*************************************************************************************************")
@@ -59,6 +48,16 @@ def redactor(args):
                 redactContents = redactObj.redactGenders(fileName, redactContents)
             print("*****************************************************************************************************")
             print("values before redaction starts:", redactContents)
+            if args.stats:
+                if not pathlib.Path(args.stats + '/stat.txt').is_file():
+                    try:
+                        os.mkdir(args.stats)
+                        open(args.stats + '/stat.txt', mode="w")
+                    except OSError as dirErr:
+                        open(args.stats + '/stat.txt', mode="w")
+                        print(f"Directory already exists. So, no need to create one. Error message:{dirErr}")
+                else:
+                    open(args.stats + '/stat.txt', mode="w")
             content = redactObj.redactContent(args, fileName, redactContents)
             print(f"Final redacted content for {fileName}: {content}")
             if args.output:
