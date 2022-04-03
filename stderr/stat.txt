@@ -1,4 +1,25 @@
 
+******************** 	 rawdata3.txt 	 ***********************
+ Total concepts Redacted:  0
+ Total Names Redacted: 	 18
+ Total Dates Redacted: 	 4
+ Total Phone Numbers Redacted:  2
+ Number of address redacted:  1
+ Total genders Redacted:  1
+******************** 	 rawdata4.txt 	 ***********************
+ Total concepts Redacted:  0
+ Total Names Redacted: 	 366
+ Total Dates Redacted: 	 6
+ Total Phone Numbers Redacted:  4
+ Number of address redacted:  0
+ Total genders Redacted:  0
+******************** 	 rawdata5.txt 	 ***********************
+ Total concepts Redacted:  0
+ Total Names Redacted: 	 58
+ Total Dates Redacted: 	 13
+ Total Phone Numbers Redacted:  2
+ Number of address redacted:  0
+ Total genders Redacted:  0
 ******************** 	 inputFiles\rawdata2.txt 	 ***********************
  Total concepts Redacted:  0
  Total Names Redacted: 	 8

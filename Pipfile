@@ -8,8 +8,6 @@ argparse = "*"
 nlp = "*"
 spacy = "*"
 nltk = "*"
-dateparser = "*"
-datefinder = "*"
 pytest = "*"
 
 [dev-packages]
