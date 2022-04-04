@@ -3,6 +3,7 @@ import os
 import pathlib
 import glob
 import nltk
+import sys
 
 from main import redactFiles
 
@@ -15,16 +16,12 @@ def redactor(args):
         print("No input file extensions are passed.")
     else:
         for extension in flattenFilesList:
-            print("File Name extension:", extension)
-            print("file String Name:", glob.glob(extension))
             filesList.append(glob.glob(extension))
         filesList = nltk.flatten(filesList)
-        print("Files List after glob library:", filesList)
         redactObj = redactFiles()
         for fileName in filesList:
             redactContents = {}
-            print("*************************************************************************************************")
-            print("file Name:", fileName)
+            print(f"\n*************************************\t{fileName}\t************************************************************")
             if fileName == "requirements.txt" or fileName == "stderr/stat.txt" or fileName == "stderr\\stat.txt":
                 continue
             if args.names:
@@ -39,16 +36,12 @@ def redactor(args):
                 concepts = nltk.flatten(args.concept)
                 resultList = []
                 for concept in concepts:
-                    print("concept:", concept)
                     resultList.append(redactObj.redactConcept(fileName, concept))
                 resultList = nltk.flatten(resultList)
-                print(f"Result from redactConcept method: {resultList}")
                 redactContents['concept'] = resultList
             if args.genders:
                 redactContents = redactObj.redactGenders(fileName, redactContents)
-            print("*****************************************************************************************************")
-            print("values before redaction starts:", redactContents)
-            if args.stats:
+            if args.output != 'stdout' or args.output != 'stderr':
                 if not pathlib.Path(args.stats + '/stat.txt').is_file():
                     try:
                         os.mkdir(args.stats)
@@ -59,17 +52,21 @@ def redactor(args):
                 else:
                     open(args.stats + '/stat.txt', mode="w")
             content = redactObj.redactContent(args, fileName, redactContents)
-            print(f"Final redacted content for {fileName}: {content}")
-            if args.output:
+            if args.output == 'stdout':
+                print(f"\nAfter redaction, the content in the {fileName}:")
+                sys.stdout.write(content)
+            elif args.output == 'stderr':
+                print(f"\nAfter redaction, the content in the {fileName}:")
+                sys.stderr.write(content)
+            else:
                 tempFileName = ''
-                for i in range(len(fileName)-1, -1, -1):
+                for i in range(len(fileName) - 1, -1, -1):
                     if fileName[i] == '/' or fileName[i] == '\\':
                         break
                     tempFileName = tempFileName + fileName[i]
                 fileName = ''
-                for i in range(len(tempFileName)-1, -1, -1):
-                    fileName = fileName+tempFileName[i]
-                print("File Name:", fileName)
+                for i in range(len(tempFileName) - 1, -1, -1):
+                    fileName = fileName + tempFileName[i]
                 if not pathlib.Path(args.output + fileName + '.redacted').is_file():
                     try:
                         os.mkdir(args.output)
