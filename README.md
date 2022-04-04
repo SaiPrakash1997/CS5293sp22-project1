@@ -45,15 +45,17 @@ redactor(args) function in redactor.py:
   _Example: redactContents['names'] = namesHoldingList_
 * Multiple flags can be given for concept. So, I am using a for loop to iterate through the list and collecting the sentences in a list. Finally, storing it in the redactContents dictionary. I am using nltk.flatten() method to flatten the list before storing it in the dictionary.
 * After detecting and collecting the sensitive information in the dictionary, along with args and fileName passing it to the redactContent method in main.py as parameters for redaction.
-* # three output cases:
-   case 1:
+* #####Three output cases:
+    case 1:
    * The redacted content is stored in content variable. The glob library picks up the filename along with directory name. So, to get the appropriate file name I am using a for loop to read the string from backwards and breaking loop when it encounters characters like '/' or '\\'.
      _Example path picked by glob library: inputFiles/sample4.txt_
    * Before writing the redacted content to the file, I am first checking if the file path exists or not. If not then I am creating the directory with os.mkdir(args.output) and creating a file with open(args.output + fileName + '.redacted', mode="w", encoding='utf-8') method with the mentioned parameters.
    * If file already exits in the specified path then I am opening the file and writing the redacted content to it.
-   case 2:
+   
+  case 2:
    * When stdout is passed, I am using sys library to write the output to console/command line.
       _Example: sys.stdout.write(content)_
+  
   case 3:
    * When stderr is passed, I am using sys library to write the output to console/command line.
       _Example: sys.stderr.write(content)_
