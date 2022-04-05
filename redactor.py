@@ -26,7 +26,7 @@ def redactor(args):
                     open(args.stats + '/stat.txt', mode="w")
                 except OSError as dirErr:
                     open(args.stats + '/stat.txt', mode="w")
-                    print(f"Directory already exists. So, no need to create one. Error message:{dirErr}")
+                    print(f" \n Directory already exists. So, no need to create one. Error message:{dirErr}")
             else:
                 open(args.stats + '/stat.txt', mode="w")
         for fileName in filesList:
@@ -73,7 +73,7 @@ def redactor(args):
                         writeToRedactedFile = open(args.output + fileName + '.redacted', mode="w", encoding='utf-8')
                         writeToRedactedFile.write(content)
                     except OSError as dirErr:
-                        print(f"File already exists. So, writing redacted content to it. Error:{dirErr}")
+                        print(f" \n File already exists. So, writing redacted content to it. Error:{dirErr}")
                         writeToRedactedFile = open(args.output + fileName + '.redacted', mode="w", encoding='utf-8')
                         writeToRedactedFile.write(content)
                 else:
