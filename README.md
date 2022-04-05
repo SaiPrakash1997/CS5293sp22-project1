@@ -11,7 +11,7 @@ Goal: The aim of the project is to use the knowledge of Python and Text Analytic
 3) open the directory using cd cs5293sp22-project1
 4) Run the below command to start the project:
 
-pipenv run python redactor.py --input '*.txt' --input '*/*.txt' --names --dates --phones --genders --address --concept 'kids' --concept 'prison' --output 'files/' --stats stderr
+`pipenv run python redactor.py --input '*.txt' --input '*/*.txt' --names --dates --phones --genders --address --concept 'kids' --concept 'prison' --output 'files/' --stats stderr`
 
 #### WEB OR EXTERNAL LIBRARIES:
 1) en_core_web_lg
@@ -66,8 +66,10 @@ redactor(args) function in redactor.py:
   _Example: redactContents['names'] = namesHoldingList_
 * Multiple flags can be given for concept. So, I am using a for loop to iterate through the list and collecting the sentences in a list. Finally, storing it in the redactContents dictionary. I am using nltk.flatten() method to flatten the list before storing it in the dictionary.
 * After detecting and collecting the sensitive information in the dictionary, along with args and fileName passing it to the redactContent method in main.py as parameters for redaction.
-  #####Three output cases:
-    case 1:
+  
+##### Three output cases:
+    
+  case 1:
    * The redacted content is stored in content variable. The glob library picks up the filename along with directory name. So, to get the appropriate file name I am using a for loop to read the string from backwards and breaking loop when it encounters characters like '/' or '\\'.
      
      _Example path picked by glob library: inputFiles/sample4.txt_
@@ -82,14 +84,15 @@ redactor(args) function in redactor.py:
   case 3:
    * When stderr is passed, I am using sys library to write the output to console/command line.
       
-     _Example: sys.stderr.write(content)_
+    _Example: sys.stderr.write(content)_
   
-  #####Three cases for stats file:
-    * case 1: When passed input is not stdout or stderr, the program will check to see if there exists a path with the passed input parameter. If not it will create the directory with that input parameter and a file named stats.txt in that directory.
+##### Three cases for stats file:
+    
+  * case 1: When passed input is not stdout or stderr, the program will check to see if there exists a path with the passed input parameter. If not it will create the directory with that input parameter and a file named stats.txt in that directory.
 
-    * case 2: when stdout is passed, I am using sys library to write the stats to console/command line.
+  * case 2: when stdout is passed, I am using sys library to write the stats to console/command line.
 
-    * case 3: When stderr is passed, I am using sys library to write the stats to console/command line.
+  * case 3: When stderr is passed, I am using sys library to write the stats to console/command line.
 
 
 redactNames(self, fileName, redactContents):
@@ -108,9 +111,10 @@ redactDates(self, fileName, redactContents):
   
 
   Format 1: Wed, 9 Jan 2002
+  
      Regular expressions: below regular expressions also finds formats related to format 1.
 
-
+```
      "([mM]onday?|[tT]uesday?|[wW]ednesday?|[tT]hrusday?|[fF]riday?|[sS]aturday?|[sS]unday?)(,)\s([\d]{1,2})\s([jJ]anuary?|[fF]ebruary?|[mM]arch?|[aA]pril?|[mM]ay?|[jJ]une?|[jJ]uly?|[aA]ugust?|[sS]eptember?|[oO]ctober?|[nN]ovember?|[dD]ecember?)\s([\d]{4})"
      
      "([mM]onday?|[tT]uesday?|[wW]ednesday?|[tT]hrusday?|[fF]riday?|[sS]aturday?|[sS]unday?)(,)\s([\d]{1,2})\s([jJ]an?|[fF]eb?|[mM]ar?|[aA]pr?|[mM]ay?|[jJ]un?|[jJ]ul?|[aA]ug?|[sS]ep?|[oO]ct?|[nN]ov?|[dD]ec?)\s([\d]{4})"
@@ -118,6 +122,7 @@ redactDates(self, fileName, redactContents):
      "([mM]on?|[tT]ues?|[wW]ed?|[tT]hrus?|[fF]ri?|[sS]at?|[sS]un?)(,)\s([\d]{1,2})\s([jJ]anuary?|[fF]ebruary?|[mM]arch?|[aA]pril?|[mM]ay?|[jJ]une?|[jJ]uly?|[aA]ugust?|[sS]eptember?|[oO]ctober?|[nN]ovember?|[dD]ecember?)\s([\d]{4})"
 
      "([mM]on?|[tT]ues?|[wW]ed?|[tT]hrus?|[fF]ri?|[sS]at?|[sS]un?)(,)\s([\d]{1,2})\s([jJ]an?|[fF]eb?|[mM]ar?|[aA]pr?|[mM]ay?|[jJ]un?|[jJ]ul?|[aA]ug?|[sS]ep?|[oO]ct?|[nN]ov?|[dD]ec?)\s([\d]{4})"
+  ```
 
   Format 2: Friday, November 02, 2001
      Regular expressions: below regular expressions also finds formats related to format 2.
@@ -219,7 +224,7 @@ redactPhones(self, fileName, redactContents):
 * I have surrounded open() method with try-catch block, to catch any unexpected errors.
 * I have initialized lists to store string values collected from the below regular expressions.
    
-     
+     ```
      Format                             Regular Expression
  
      +1 1111111111                      "([+][\d]{1})\s([\d]{10})"
@@ -242,6 +247,8 @@ redactPhones(self, fileName, redactContents):
 
      (111) 111-1111                     "([(][\d]{3}[)]\s[\d]{3}[-][\d]{4})"
 
+  ```
+  
 * I am using for loop to append the string values in a tuple, utilizing strip() method to remove spaces and storing the result in a list.
 * For values collected by last 5 regular expressions, I am adding extra filter to remove discrepancies(where file may contain number or some value with length of 10). Usually, phone numbers don't start with 0 or 1. So, added below code to remove those values from the list.
    
