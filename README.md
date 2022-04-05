@@ -346,3 +346,56 @@ To overcome this problem, I am using regular expressions. Below are the regular 
                     content = re.sub("\s" + toReplace + "\W", " " + "█"*len(toReplace), content)
 
 * Finally, returning the redacted content to the redactor() method in redactor.py for writing it to the new file.
+
+
+### Test Cases
+
+* Test cases to test above functionalities are available in tests folder.
+* Command to run test cases: pipenv run python -m pytest
+
+test_address.py:
+* First, I am using glob library to read the text files from current folder then I am using for loop to iterate files and pass the file name as input to redactAddress() method.
+* I have initialized a dictionary to store the output that we get from the method.
+* Finally, I am using assert statements to check the type, length etc. of the result.
+
+test_concept.py:
+* First, I am using glob library to read the text files from current folder then I am using for loop to iterate files and pass the file name as input to redactConcept() method.
+* I have also pre-defined some concepts to pass as input to the method, and I have initialized a dictionary and a list to store the output that we get from the method
+* Finally, I am using assert statements to check the length of list for every iteration. At the end, I am written assert statements to check type, length etc. of the list present in the dictionary.
+
+test_content.py:
+* For redactContent() method, I am first doing the same thing as every other method that is trying to gather available text files using glob library.
+* I have defined the values for redactContents dictionary. Locally, I have defined and set the flags for argument parser.
+* To get output, I am sending the args, fileName, redactContents as input parameters for redactContent() method.
+* Finally, I have used assert statements to check the type, length etc. of the output.
+
+test_dates.py:
+* First, I am using glob library to read the text files from current folder then I am using for loop to iterate files and pass the file name as input to redactDates() method.
+* I have initialized a dictionary to store the output that we get from the method. Again, storing the value in a local variable to perform assertion.
+* Finally, I am using assert statements to check the type, length etc. of the local variable.
+
+test_genders.py:
+* First, I am using glob library to read the text files from current folder then I am using for loop to iterate files and pass the file name as input to redactGenders() method.
+* I have initialized a dictionary to store the output that we get from the method. Again, storing the value in a local variable to perform assertion.
+* Finally, I am using assert statements to check the type, length etc. of the local variable.
+
+test_names.py:
+* First, I am using glob library to read the text files from current folder then I am using for loop to iterate files and pass the file name as input to redactNames() method.
+* I have initialized a dictionary to store the output that we get from the method. Again, storing the value in a local variable to perform assertion.
+* Finally, I am using assert statements to check the type, length etc. of the local variable.
+
+test_phones.py:
+* First, I am using glob library to read the text files from current folder then I am using for loop to iterate files and pass the file name as input to redactPhones() method.
+* I have initialized a dictionary to store the output that we get from the method. Again, storing the value in a local variable to perform assertion.
+* Finally, I am using assert statements to check the type, length etc. of the local variable.
+
+![img.png](docs/img.png)
+
+
+### GitHub:
+The above-mentioned files need to be added, committed, and pushed to GitHub repository by using the following commands.
+
+git add file-name;
+git commit -m "commit message"
+git push origin main
+
