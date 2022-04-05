@@ -112,7 +112,7 @@ redactDates(self, fileName, redactContents):
 
   Format 1: Wed, 9 Jan 2002
   
-     Regular expressions: below regular expressions also finds formats related to format 1.
+     Regular expressions: below regular expressions also contains formats related to format 1.
 
 ```
      "([mM]onday?|[tT]uesday?|[wW]ednesday?|[tT]hrusday?|[fF]riday?|[sS]aturday?|[sS]unday?)(,)\s([\d]{1,2})\s([jJ]anuary?|[fF]ebruary?|[mM]arch?|[aA]pril?|[mM]ay?|[jJ]une?|[jJ]uly?|[aA]ugust?|[sS]eptember?|[oO]ctober?|[nN]ovember?|[dD]ecember?)\s([\d]{4})"
@@ -125,7 +125,7 @@ redactDates(self, fileName, redactContents):
   ```
 
   Format 2: Friday, November 02, 2001
-     Regular expressions: below regular expressions also finds formats related to format 2.
+     Regular expressions: below regular expressions also contains formats related to format 2.
 
 
      "([mM]onday?|[tT]uesday?|[wW]ednesday?|[tT]hrusday?|[fF]riday?|[sS]aturday?|[sS]unday?)(,)\s([jJ]anuary?|[fF]ebruary?|[mM]arch?|[aA]pril?|[mM]ay?|[jJ]une?|[jJ]uly?|[aA]ugust?|[sS]eptember?|[oO]ctober?|[nN]ovember?|[dD]ecember?)\s([\d]{1,2})(,)\s([\d]{4})"
@@ -138,7 +138,7 @@ redactDates(self, fileName, redactContents):
 
 
   Format 3: Friday 11/9/01
-     Regular expressions: below regular expressions also finds formats related to format 3.
+     Regular expressions: below regular expressions also contains formats related to format 3.
 
      "([mM]onday?|[tT]uesday?|[wW]ednesday?|[tT]hrusday?|[fF]riday?|[sS]aturday?|[sS]unday?)\s([\d]{1,2}/[\d]{1,2}/[\d]{4})"
      
@@ -174,7 +174,7 @@ redactDates(self, fileName, redactContents):
 
 
   Format 4: 11/2/01
-     Regular expressions: below regular expressions also finds formats related to format 4.
+     Regular expressions: below regular expressions also contains formats related to format 4.
   
      "[\d]{1,2}/[\d]{1,2}/[\d]{4}"
 
@@ -193,7 +193,7 @@ redactDates(self, fileName, redactContents):
      "[\d]{2}-[\d]{1,2}-[\d]{1,2}"
 
   Format 5: January 1, 2002
-     Regular expressions: below regular expressions also finds formats related to format 5.
+     Regular expressions: below regular expressions also contains formats related to format 5.
   
      "([\d]{1,2})\s([jJ]anuary?|[fF]ebruary?|[mM]arch?|[aA]pril?|[mM]ay?|[jJ]une?|[jJ]uly?|[aA]ugust?|[sS]eptember?|[oO]ctober?|[nN]ovember?|[dD]ecember?)\s([\d]{4})"
         
@@ -204,7 +204,7 @@ redactDates(self, fileName, redactContents):
      "([jJ]an?|[fF]eb?|[mM]ar?|[aA]pr?|[mM]ay?|[jJ]un?|[jJ]ul?|[aA]ug?|[sS]ep?|[oO]ct?|[nN]ov?|[dD]ec?)\s([\d]{1,2},)\s([\d]{4})"
 
   Format 6: December 29
-     Regular expressions: below regular expressions also finds formats related to format 6.
+     Regular expressions: below regular expressions also contains formats related to format 6.
 
      "([\d]{1,2})\s([jJ]anuary?|[fF]ebruary?|[mM]arch?|[aA]pril?|[mM]ay?|[jJ]une?|[jJ]uly?|[aA]ugust?|[sS]eptember?|[oO]ctober?|[nN]ovember?|[dD]ecember?)"
            
