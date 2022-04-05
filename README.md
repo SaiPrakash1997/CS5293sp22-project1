@@ -17,24 +17,22 @@ Goal: The aim of the project is to use the knowledge of Python and Text Analytic
 
 #### WEB OR EXTERNAL LIBRARIES:
 1) en_core_web_lg
-2) argparse
-3) nlp
-4) spacy
-5) nltk
-6) pytest
-7) pyap
+2) nlp
+3) spacy
+4) nltk
+5) pytest
+6) pyap
 
 #### INSTALLATION OF ABOVE LIBRARIES:
 1) en_core_web_lg is a large english pipeline trained on written web text. This is automatically installed through Pipfile or you can use this command to install it: pipenv run python -m spacy download en_core_web_lg
-2) pipenv install argparse
-3) pipenv install nlp
-4) pipenv install spacy
-5) pipenv install nltk
-6) pipenv install pytest
-7) pipenv install pyap
+2) pipenv install nlp
+3) pipenv install spacy
+4) pipenv install nltk
+5) pipenv install pytest
+6) pipenv install pyap
 
 ### Assumptions made in the project
-The following assumptions were made after analyzing the selected files from the provided dataset.
+The following assumptions were made after analyzing the selected files from the provided Enron dataset.
 
 Definition of names: I am defining name as people's name. It might be first name or last name or middle name.
 * In redactNames() method, my assumption is that spacy and nltk libraries identifies all the names in the file. But there are few edge cases where it fails to identify, few formats are mentioned below.
@@ -45,17 +43,20 @@ Definition of names: I am defining name as people's name. It might be first name
     4) name \n name;
 
   
-Definition of dates: My definition of dates comes from my analysis of files from the dataset. I am considering yesterday, today, monday, tuesday, wednesday etc. also as dates. 
-* In redactDates() method, I have analysed and identified the date formats used and wrote regular expressions to detect and collect those dates whenever a file comes for redaction. As there are millions of date formats, I have assumed that spacy library can detect and collect date formats which were not covered by written regular expressions.
+Definition of dates: My definition of dates comes from my analysis of selected files from the dataset. I am considering yesterday, today, monday, tuesday, wednesday etc. also as dates. 
+* In redactDates() method, I have analysed and identified the date formats used and wrote regular expressions to detect and collect those dates whenever a file comes for redaction process. As there are millions of date formats, I have assumed that spacy library can detect and collect date formats which were not covered by written regular expressions.
 
  Definition of phones: My definition of phone numbers comes from my analysis of files from the dataset. 
 * In redactPhones() method, I have done the same as redactDates() method. At first, I have identified various formats of phone numbers used in the dataset and wrote regular expressions that detect and collects these values from the file. I have also wrote regular expressions for similar formats.
 
- Definition of address: My definition of address is a string which contains value from street name to zipcode like 2236 Houston Avenue, Norman, OK 73071 but not Geopolitical entity like Austin, Oklahoma, etc.
-* In redactAddress() method, I am assuming that pyap library detects every address in the file and returns values as output.
+ Definition of address: My definition of address is a string which contains value from street name to zipcode like '2236 Houston Avenue, Norman, OK 73071' but not Geopolitical entity like Austin, Oklahoma, etc.
+* In redactAddress() method, I am used pyap library to detect every address in the file and return values as output.
 
  Definition of genders: I have defined a static list which holds all possible words that reveal the identity of a person.
-* In redactGenders() method, based on the values in the pre-defined list I am redacting the content in the file.
+* In redactGenders() method, based on the values in the pre-defined list, I am redacting the content in the file which comes for redaction process.
+
+ Definition of concept: I have considered synonyms as values to detect for any concept passed through command line.
+* In redactConcept() method, based on the concept passed and synonyms collected using wordnet method, I am detecting and collecting the sentences.
   
 Output Files:
 * One important thing to note here, The format of the output file might differ from original file in some cases.
@@ -280,7 +281,12 @@ redactAddress(self, fileName, redactContents):
 * The tempHolder list is then stored in redactContents dictionary with key as address.
 
 redactConcept(self, fileName, concept):
-
+* This method takes fileName, redactContents, and concept as parameters, the fileName provides the name of the current file, redactContents stores the list of sentences that that contains concept or synonym word in it.
+* These list of sentences were detected and collected to hid sensitive information. I have surrounded open() method with try-catch block, to catch any unexpected errors.
+* First, Using nltk.corpus() library, I am importing wordnet method to identify the synonyms of concept.
+* After identifying the synonyms, I am using nltk.sent_tokenize() method to break down the corpus into sentences.
+* I am using if condition to check whether the identified synonym exist in the sentence. If so, I am collecting the whole sentence and adding it to the list.
+* Finally, I am returning the identified sentences as a list to redactor() method in redactor.py
 
 redactGenders(self, fileName, redactContents):
 * This method takes fileName and redactContents as parameters, the fileName provides the name of the current file and redactContents stores the list of words that specify gender of a person which were detected and collected to hide sensitive information.
