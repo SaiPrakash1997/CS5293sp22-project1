@@ -325,10 +325,10 @@ class redactFiles:
             content = open(fileName, 'r').read()
         except (FileNotFoundError, IOError, Exception) as error:
             print(f"Following error was raised when reading a file {error.args}")
-        if args.output == 'stdout':
+        if args.stats == 'stdout':
             sys.stdout.write("\n***********\t" + "stats for " + fileName + "\t***********")
-        elif args.output == 'stderr':
-            sys.stdout.write("\n***********\t" + "stats for " + fileName + "\t***********")
+        elif args.stats == 'stderr':
+            sys.stderr.write("\n***********\t" + "stats for " + fileName + "\t***********")
         else:
             writeToStatFile = open(args.stats + '/stat.txt', mode="a")
             writeToStatFile.write("\n******************** \t " + fileName + " \t ***********************")
@@ -338,10 +338,10 @@ class redactFiles:
             for sentence in toReplaceList:
                 count += 1
                 content = content.replace(sentence, "█" * len(sentence))
-            if args.output == 'stdout' or args.output == 'stderr':
+            if args.stats == 'stdout':
                 sys.stdout.write("\n Total concepts Redacted:  " + str(count))
-            elif args.output == 'stderr':
-                sys.stdout.write("\n Total concepts Redacted:  " + str(count))
+            elif args.stats == 'stderr':
+                sys.stderr.write("\n Total concepts Redacted:  " + str(count))
             else:
                 writeToStatFile.write("\n Total concepts Redacted:  " + str(count))
 
@@ -352,10 +352,10 @@ class redactFiles:
                 if word in content:
                     count += 1
                     content = content.replace(word, "█" * len(word))
-            if args.output == 'stdout' or args.output == 'stderr':
+            if args.stats == 'stdout':
                 sys.stdout.write("\n Total Names Redacted: \t " + str(count))
-            elif args.output == 'stderr':
-                sys.stdout.write("\n Total Names Redacted: \t " + str(count))
+            elif args.stats == 'stderr':
+                sys.stderr.write("\n Total Names Redacted: \t " + str(count))
             else:
                 writeToStatFile.write("\n Total Names Redacted: \t " + str(count))
 
@@ -366,10 +366,10 @@ class redactFiles:
                 if word in content:
                     count += 1
                     content = content.replace(word, "█" * len(word))
-            if args.output == 'stdout' or args.output == 'stderr':
+            if args.stats == 'stdout':
                 sys.stdout.write("\n Total Dates Redacted: \t " + str(count))
-            elif args.output == 'stderr':
-                sys.stdout.write("\n Total Dates Redacted: \t " + str(count))
+            elif args.stats == 'stderr':
+                sys.stderr.write("\n Total Dates Redacted: \t " + str(count))
             else:
                 writeToStatFile.write("\n Total Dates Redacted: \t " + str(count))
         if args.phones:
@@ -379,10 +379,10 @@ class redactFiles:
                 if word in content:
                     count += 1
                     content = content.replace(word, "█" * len(word))
-            if args.output == 'stdout' or args.output == 'stderr':
+            if args.stats == 'stdout':
                 sys.stdout.write("\n Total Phone Numbers Redacted:  " + str(count))
-            elif args.output == 'stderr':
-                sys.stdout.write("\n Total Phone Numbers Redacted:  " + str(count))
+            elif args.stats == 'stderr':
+                sys.stderr.write("\n Total Phone Numbers Redacted:  " + str(count))
             else:
                 writeToStatFile.write("\n Total Phone Numbers Redacted:  " + str(count))
         if args.address:
@@ -402,10 +402,10 @@ class redactFiles:
                     if word in content:
                         content = content.replace(word, "█" * len(word))
                 count = len(toReplaceList)
-            if args.output == 'stdout' or args.output == 'stderr':
+            if args.stats == 'stdout':
                 sys.stdout.write("\n Number of address redacted:  " + str(count))
-            elif args.output == 'stderr':
-                sys.stdout.write("\n Number of address redacted:  " + str(count))
+            elif args.stats == 'stderr':
+                sys.stderr.write("\n Number of address redacted:  " + str(count))
             else:
                 writeToStatFile.write("\n Number of address redacted:  " + str(count))
         if args.genders:
@@ -417,10 +417,10 @@ class redactFiles:
                     content = re.sub(toReplace + "\s", "█"*len(toReplace) + " ", content)
                     content = re.sub("\W"+toReplace+"\W", " "+"█"*len(toReplace)+" ", content)
                     content = re.sub("\s" + toReplace + "\W", " " + "█"*len(toReplace), content)
-            if args.output == 'stdout' or args.output == 'stderr':
+            if args.stats == 'stdout':
                 sys.stdout.write("\n Total genders Redacted:  " + str(count))
-            elif args.output == 'stderr':
-                sys.stdout.write("\n Total genders Redacted:  " + str(count))
+            elif args.stats == 'stderr':
+                sys.stderr.write("\n Total genders Redacted:  " + str(count))
             else:
                 writeToStatFile.write("\n Total genders Redacted:  " + str(count))
                 writeToStatFile.close()
