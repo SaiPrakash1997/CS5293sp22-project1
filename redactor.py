@@ -19,20 +19,23 @@ def redactor(args):
             filesList.append(glob.glob(extension))
         filesList = nltk.flatten(filesList)
         redactObj = redactFiles()
-        if args.stats != 'stdout' or args.stats != 'stderr':
-            if not pathlib.Path(args.stats + '/stat.txt').is_file():
+        if not (args.stats == "stdout" or args.stats == "stderr"):
+            if not pathlib.Path(args.stats + 'stat.txt').is_file():
                 try:
                     os.mkdir(args.stats)
-                    open(args.stats + '/stat.txt', mode="w")
+                    open(args.stats + 'stat.txt', mode="w")
                 except OSError as dirErr:
-                    open(args.stats + '/stat.txt', mode="w")
-                    print(f" \n Directory already exists. So, no need to create one. Error message:{dirErr}")
+                    open(args.stats + 'stat.txt', mode="w")
             else:
-                open(args.stats + '/stat.txt', mode="w")
+                open(args.stats + 'stat.txt', mode="w")
         for fileName in filesList:
             redactContents = {}
             print(f"\n*************************************\t{fileName}\t************************************************************")
-            if fileName == "requirements.txt" or fileName == "stderr/stat.txt" or fileName == "stderr\\stat.txt":
+            if fileName == "requirements.txt":
+                continue
+            if fileName[-1] == "t" and fileName[-2] == "x" and fileName[-3] == "t" and fileName[-4] == "." and fileName[-5] == "t" and fileName[-6] == "a" and fileName[-7] == "t" and fileName[-8] == "s":
+                continue
+            if fileName[-1] == "t" and fileName[-2] == "x" and fileName[-3] == "t" and fileName[-4] == "." and fileName[-5] == "s" and fileName[-6] == "t" and fileName[-7] == "a" and fileName[-8] == "t" and fileName[-9] == "s":
                 continue
             if args.names:
                 redactContents = redactObj.redactNames(fileName, redactContents)
@@ -73,7 +76,6 @@ def redactor(args):
                         writeToRedactedFile = open(args.output + fileName + '.redacted', mode="w", encoding='utf-8')
                         writeToRedactedFile.write(content)
                     except OSError as dirErr:
-                        print(f" \n File already exists. So, writing redacted content to it. Error:{dirErr}")
                         writeToRedactedFile = open(args.output + fileName + '.redacted', mode="w", encoding='utf-8')
                         writeToRedactedFile.write(content)
                 else:

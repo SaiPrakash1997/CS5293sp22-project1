@@ -333,6 +333,7 @@ class redactFiles:
         else:
             writeToStatFile = open(args.stats + '/stat.txt', mode="a")
             writeToStatFile.write("\n******************** \t " + fileName + " \t ***********************")
+
         if args.concept:
             count = 0
             toReplaceList = redactContents.get('concept')
@@ -345,6 +346,30 @@ class redactFiles:
                 sys.stderr.write("\n Total concepts Redacted:  " + str(count))
             else:
                 writeToStatFile.write("\n Total concepts Redacted:  " + str(count))
+
+        if args.address:
+            toReplaceList = redactContents.get('address')
+            count = 0
+            for word in toReplaceList:
+                if word in content:
+                    count += 1
+                    content = content.replace(word, "█" * len(word))
+            if count == 0 and len(toReplaceList) > 0:
+                exceptionalCase = []
+                for word in toReplaceList:
+                    exceptionalCase.append(word.split(","))
+                exceptionalCase = nltk.flatten(exceptionalCase)
+                for word in exceptionalCase:
+                    word = word.strip()
+                    if word in content:
+                        content = content.replace(word, "█" * len(word))
+                count = len(toReplaceList)
+            if args.stats == 'stdout':
+                sys.stdout.write("\n Number of address redacted:  " + str(count))
+            elif args.stats == 'stderr':
+                sys.stderr.write("\n Number of address redacted:  " + str(count))
+            else:
+                writeToStatFile.write("\n Number of address redacted:  " + str(count))
 
         if args.names:
             toReplaceList = redactContents.get('names')
@@ -373,6 +398,7 @@ class redactFiles:
                 sys.stderr.write("\n Total Dates Redacted: \t " + str(count))
             else:
                 writeToStatFile.write("\n Total Dates Redacted: \t " + str(count))
+
         if args.phones:
             toReplaceList = redactContents.get('phones')
             count = 0
@@ -386,29 +412,7 @@ class redactFiles:
                 sys.stderr.write("\n Total Phone Numbers Redacted:  " + str(count))
             else:
                 writeToStatFile.write("\n Total Phone Numbers Redacted:  " + str(count))
-        if args.address:
-            toReplaceList = redactContents.get('address')
-            count = 0
-            for word in toReplaceList:
-                if word in content:
-                    count += 1
-                    content = content.replace(word, "█" * len(word))
-            if count == 0 and len(toReplaceList) > 0:
-                exceptionalCase = []
-                for word in toReplaceList:
-                    exceptionalCase.append(word.split(","))
-                exceptionalCase = nltk.flatten(exceptionalCase)
-                for word in exceptionalCase:
-                    word = word.strip()
-                    if word in content:
-                        content = content.replace(word, "█" * len(word))
-                count = len(toReplaceList)
-            if args.stats == 'stdout':
-                sys.stdout.write("\n Number of address redacted:  " + str(count))
-            elif args.stats == 'stderr':
-                sys.stderr.write("\n Number of address redacted:  " + str(count))
-            else:
-                writeToStatFile.write("\n Number of address redacted:  " + str(count))
+
         if args.genders:
             count = 0
             toReplaceList = redactContents.get('genders')
@@ -425,6 +429,7 @@ class redactFiles:
             else:
                 writeToStatFile.write("\n Total genders Redacted:  " + str(count))
                 writeToStatFile.close()
+
         return content
 
 

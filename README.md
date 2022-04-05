@@ -13,6 +13,8 @@ Goal: The aim of the project is to use the knowledge of Python and Text Analytic
 
 `pipenv run python redactor.py --input '*.txt' --input '*/*.txt' --names --dates --phones --genders --address --concept 'kids' --concept 'prison' --output 'files/' --stats stderr`
 
+`pipenv run python redactor.py --input '*.txt' --input '*/*.txt' --names --dates --phones --genders --address --concept 'kids' --concept 'prison' --output stdout --stats stats/`
+
 #### WEB OR EXTERNAL LIBRARIES:
 1) en_core_web_lg
 2) argparse
