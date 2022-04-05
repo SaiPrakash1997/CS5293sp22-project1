@@ -34,14 +34,14 @@ def redactor(args):
             print(f"\n*************************************\t{fileName}\t************************************************************")
             if fileName == "requirements.txt" or fileName == "stderr/stat.txt" or fileName == "stderr\\stat.txt":
                 continue
-            # if args.names:
-            #     redactContents = redactObj.redactNames(fileName, redactContents)
-            # if args.dates:
-            #     redactContents = redactObj.redactDates(fileName, redactContents)
-            # if args.phones:
-            #     redactContents = redactObj.redactPhones(fileName, redactContents)
-            # if args.address:
-            #     redactContents = redactObj.redactAddress(fileName, redactContents)
+            if args.names:
+                redactContents = redactObj.redactNames(fileName, redactContents)
+            if args.dates:
+                redactContents = redactObj.redactDates(fileName, redactContents)
+            if args.phones:
+                redactContents = redactObj.redactPhones(fileName, redactContents)
+            if args.address:
+                redactContents = redactObj.redactAddress(fileName, redactContents)
             if args.concept:
                 concepts = nltk.flatten(args.concept)
                 resultList = []
@@ -49,36 +49,36 @@ def redactor(args):
                     resultList.append(redactObj.redactConcept(fileName, concept))
                 resultList = nltk.flatten(resultList)
                 redactContents['concept'] = resultList
-            # if args.genders:
-            #     redactContents = redactObj.redactGenders(fileName, redactContents)
-            # content = redactObj.redactContent(args, fileName, redactContents)
-            # if args.output == 'stdout':
-            #     print(f"\nAfter redaction, the content in the {fileName}:")
-            #     sys.stdout.write(content)
-            # elif args.output == 'stderr':
-            #     print(f"\nAfter redaction, the content in the {fileName}:")
-            #     sys.stderr.write(content)
-            # else:
-            #     tempFileName = ''
-            #     for i in range(len(fileName) - 1, -1, -1):
-            #         if fileName[i] == '/' or fileName[i] == '\\':
-            #             break
-            #         tempFileName = tempFileName + fileName[i]
-            #     fileName = ''
-            #     for i in range(len(tempFileName) - 1, -1, -1):
-            #         fileName = fileName + tempFileName[i]
-            #     if not pathlib.Path(args.output + fileName + '.redacted').is_file():
-            #         try:
-            #             os.mkdir(args.output)
-            #             writeToRedactedFile = open(args.output + fileName + '.redacted', mode="w", encoding='utf-8')
-            #             writeToRedactedFile.write(content)
-            #         except OSError as dirErr:
-            #             print(f"File already exists. So, writing redacted content to it. Error:{dirErr}")
-            #             writeToRedactedFile = open(args.output + fileName + '.redacted', mode="w", encoding='utf-8')
-            #             writeToRedactedFile.write(content)
-            #     else:
-            #         writeToRedactedFile = open(args.output + fileName + '.redacted', mode="w", encoding='utf-8')
-            #         writeToRedactedFile.write(content)
+            if args.genders:
+                redactContents = redactObj.redactGenders(fileName, redactContents)
+            content = redactObj.redactContent(args, fileName, redactContents)
+            if args.output == 'stdout':
+                print(f"\nAfter redaction, the content in the {fileName}:")
+                sys.stdout.write(content)
+            elif args.output == 'stderr':
+                print(f"\nAfter redaction, the content in the {fileName}:")
+                sys.stderr.write(content)
+            else:
+                tempFileName = ''
+                for i in range(len(fileName) - 1, -1, -1):
+                    if fileName[i] == '/' or fileName[i] == '\\':
+                        break
+                    tempFileName = tempFileName + fileName[i]
+                fileName = ''
+                for i in range(len(tempFileName) - 1, -1, -1):
+                    fileName = fileName + tempFileName[i]
+                if not pathlib.Path(args.output + fileName + '.redacted').is_file():
+                    try:
+                        os.mkdir(args.output)
+                        writeToRedactedFile = open(args.output + fileName + '.redacted', mode="w", encoding='utf-8')
+                        writeToRedactedFile.write(content)
+                    except OSError as dirErr:
+                        print(f"File already exists. So, writing redacted content to it. Error:{dirErr}")
+                        writeToRedactedFile = open(args.output + fileName + '.redacted', mode="w", encoding='utf-8')
+                        writeToRedactedFile.write(content)
+                else:
+                    writeToRedactedFile = open(args.output + fileName + '.redacted', mode="w", encoding='utf-8')
+                    writeToRedactedFile.write(content)
 
 
 if __name__ == '__main__':

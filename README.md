@@ -273,7 +273,74 @@ redactGenders(self, fileName, redactContents):
 * Using for loop, I am iterating through genderWordsList and checking if the current word is in the defined static list i.e., genderWords. if so, I am appending the word to tempHolder list.
 * Finally, the tempHolder list is stored to redactContents dictionary with key as genders.
 
+redactContent(self, args, fileName, redactContents):
+* This method takes args, fileName, redactContents as input, the args contains the input passed from user through command line, filename specifies the name of the current file, and redactContents dictionary contains the content that should be redacted in the current file.
+* program goes to each if block and checks if the flag is true then gets the list value from redactContents dictionary. Then it goes value by value in the list and performs redaction.
+* Redaction is replacing the value with "█" character.
+
+  Example: if args.names flag is True then only it goes into the below if block. It does this check for every flag and performs redaction.
+
+       if args.names:
+            toReplaceList = redactContents.get('names')
+            count = 0
+            for word in toReplaceList:
+                if word in content:
+                    count += 1
+                    content = content.replace(word, "█" * len(word))
+            if args.stats == 'stdout':
+                sys.stdout.write("\n Total Names Redacted: \t " + str(count))
+            elif args.stats == 'stderr':
+                sys.stderr.write("\n Total Names Redacted: \t " + str(count))
+            else:
+                writeToStatFile.write("\n Total Names Redacted: \t " + str(count))
 
 
+* Coming to address, the pyap library takes in any matching address from the file and produces output which is separated by commas.
+  
+Example:
 
+     address in file: 600 Congress Avenue, Suite 2700  
+                      Austin, TX 78701
+     
+     address produced by pyap library: 600 Congress Avenue, Suite 2700,  
+                                       Austin, TX 78701
 
+So, replace method can't redact the string because there is slight mismatch between both strings. 
+
+Solution: To overcome this I have written below code. What it basically does is if the length of the address list in redactContents is more than 0 but stats count for address is 0 then I am splitting the address list and then applying the replace method.
+
+        if args.address:
+            toReplaceList = redactContents.get('address')
+            count = 0
+            for word in toReplaceList:
+                if word in content:
+                    count += 1
+                    content = content.replace(word, "█" * len(word))
+            if count == 0 and len(toReplaceList) > 0:
+                exceptionalCase = []
+                for word in toReplaceList:
+                    exceptionalCase.append(word.split(","))
+                exceptionalCase = nltk.flatten(exceptionalCase)
+                for word in exceptionalCase:
+                    word = word.strip()
+                    if word in content:
+                        content = content.replace(word, "█" * len(word))
+                count = len(toReplaceList)
+            if args.stats == 'stdout':
+                sys.stdout.write("\n Number of address redacted:  " + str(count))
+            elif args.stats == 'stderr':
+                sys.stderr.write("\n Number of address redacted:  " + str(count))
+            else:
+                writeToStatFile.write("\n Number of address redacted:  " + str(count))
+
+* To redact genders, I am following the same logic as other flags that is when the input flag for genders is true, the programs redacts the words which are in the list.
+  but there is potential problem that is replace() method replaces words within the words like let's say king specifies a gender so I am trying to redact word king but for this sentence "king is good at pranking." king in pranking will also gets replaced.
+
+To overcome this problem, I am using regular expressions. Below are the regular expressions that I used along with re.sub() method to redact genders without causing any discrepancies.
+      
+         Code:
+                    content = re.sub(toReplace + "\s", "█"*len(toReplace) + " ", content)
+                    content = re.sub("\W"+toReplace+"\W", " "+"█"*len(toReplace)+" ", content)
+                    content = re.sub("\s" + toReplace + "\W", " " + "█"*len(toReplace), content)
+
+* Finally, returning the redacted content to the redactor() method in redactor.py for writing it to the new file.
