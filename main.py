@@ -5,6 +5,7 @@ from nltk.corpus import wordnet
 import re
 import pyap
 import sys
+import en_core_web_lg
 nltk.download('punkt')
 nltk.download('averaged_perceptron_tagger')
 nltk.download('maxent_ne_chunker')
@@ -25,7 +26,7 @@ class redactFiles:
 
         content = content.strip()
         sentenceList = nltk.sent_tokenize(content)
-        nlp = spacy.load('en_core_web_lg')
+        nlp = en_core_web_lg.load()
         namesHoldingList = []
         for sentence in sentenceList:
             doc = nlp(sentence)
@@ -180,7 +181,7 @@ class redactFiles:
             r"([\d]{1,2})\s([jJ]an?|[fF]eb?|[mM]ar?|[aA]pr?|[mM]ay?|[jJ]un?|[jJ]ul?|[aA]ug?|[sS]ep?|[oO]ct?|[nN]ov?|[dD]ec?)",
             content))
         sentenceList = nltk.sent_tokenize(content)
-        nlp = spacy.load('en_core_web_lg')
+        nlp = en_core_web_lg.load()
         for sentence in sentenceList:
             doc = nlp(sentence)
             for token in doc.ents:
