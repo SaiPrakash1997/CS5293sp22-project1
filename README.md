@@ -42,14 +42,20 @@ Definition of names: I am defining name as people's name. It might be first name
     3) name-Initial
     4) name \n name;
 
+  
 Definition of dates: My definition of dates comes from my analysis of files from the dataset. I am considering yesterday, today, monday, tuesday, wednesday etc. also as dates. 
 * In redactDates() method, I have analysed and identified the date formats used and wrote regular expressions to detect and collect those dates whenever a file comes for redaction. As there are millions of date formats, I have assumed that spacy library can detect and collect date formats which were not covered by written regular expressions.
-Definition of phones: My definition of phone numbers comes from my analysis of files from the dataset. 
+
+ Definition of phones: My definition of phone numbers comes from my analysis of files from the dataset. 
 * In redactPhones() method, I have done the same as redactDates() method. At first, I have identified various formats of phone numbers used in the dataset and wrote regular expressions that detect and collects these values from the file. I have also wrote regular expressions for similar formats.
-Definition of address: My definition of address is a string which contains value from street name to zipcode like 2236 Houston Avenue, Norman, OK 73071 but not Geopolitical entity like Austin, Oklahoma, etc.
+
+ Definition of address: My definition of address is a string which contains value from street name to zipcode like 2236 Houston Avenue, Norman, OK 73071 but not Geopolitical entity like Austin, Oklahoma, etc.
 * In redactAddress() method, I am assuming that pyap library detects every address in the file and returns values as output.
-Definition of genders: I have defined a static list which holds all possible words that reveal the identity of a person.
+
+ Definition of genders: I have defined a static list which holds all possible words that reveal the identity of a person.
 * In redactGenders() method, based on the values in the pre-defined list I am redacting the content in the file.
+  
+Output Files:
 * One important thing to note here, The format of the output file might differ from original file in some cases.
 
 
