@@ -365,11 +365,11 @@ class redactFiles:
                         content = content.replace(word, "█" * len(word))
                 count = len(toReplaceList)
             if args.stats == 'stdout':
-                sys.stdout.write("\n Number of address redacted:  " + str(count))
+                sys.stdout.write("\n Total number of address redacted:  " + str(count))
             elif args.stats == 'stderr':
-                sys.stderr.write("\n Number of address redacted:  " + str(count))
+                sys.stderr.write("\n Total number of address redacted:  " + str(count))
             else:
-                writeToStatFile.write("\n Number of address redacted:  " + str(count))
+                writeToStatFile.write("\n Total number of address redacted:  " + str(count))
 
         if args.names:
             toReplaceList = redactContents.get('names')
