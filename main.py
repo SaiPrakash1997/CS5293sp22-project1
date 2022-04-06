@@ -283,6 +283,8 @@ class redactFiles:
         resultList = []
         for word in synonyms:
             conceptWords.append(word.lemma_names())
+            for innerWords in word.hypernyms():
+                conceptWords.append(innerWords.lemma_names())
         conceptWords = nltk.flatten(conceptWords)
         try:
             content = open(fileName, 'r').read()
