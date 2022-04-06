@@ -375,7 +375,7 @@ class redactFiles:
             toReplaceList = redactContents.get('names')
             count = 0
             for word in toReplaceList:
-                if word in content:
+                if word in content and word != 'PLEASE' and word != 'Please' and word != 'Hello' and word != 'HELLO':
                     count += 1
                     content = content.replace(word, "█" * len(word))
             if args.stats == 'stdout':
