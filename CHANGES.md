@@ -86,12 +86,3 @@ Note: These are minimum system requirements needed for compute engine to run my 
 * The changed code doesn't require to re-write any test functions.
 
 
-
-### GitHub:
-The above-mentioned files need to be added, committed, and pushed to GitHub repository by using the following commands.
-
-git add file-name;
-  
-git commit -m "commit message"
-  
-git push origin main
