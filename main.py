@@ -365,6 +365,7 @@ class redactFiles:
             addressList = redactContents.get('address')
             count = 0
             for address in addressList:
+                count += 1
                 addressStartWord = address[0]+address[1]+address[2]
                 addressEndWord = address[-5]+address[-4]+address[-3]+address[-2]+address[-1]
                 content = re.sub(addressStartWord+".*[\n]*.*[\n]*.*[\n]*.*[\n]*.*"+addressEndWord, "█" * len(address), content)
