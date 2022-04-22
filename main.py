@@ -1,4 +1,3 @@
-import nltk
 import pattern
 from nltk.tree import Tree
 from nltk.corpus import wordnet
@@ -7,12 +6,14 @@ import pyap
 import sys
 import en_core_web_lg
 from pattern import en
+import nltk
+nltk.download('omw-1.4')
 nltk.download('punkt')
 nltk.download('averaged_perceptron_tagger')
 nltk.download('maxent_ne_chunker')
 nltk.download('words')
 nltk.download('wordnet')
-nltk.download('omw-1.4')
+
 
 
 class redactFiles:
