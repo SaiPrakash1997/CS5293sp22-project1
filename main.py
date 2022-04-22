@@ -1,19 +1,17 @@
-import pattern
-from nltk.tree import Tree
-from nltk.corpus import wordnet
 import re
 import pyap
 import sys
 import en_core_web_lg
-from pattern import en
+# from pattern import en
 import nltk
+from nltk.tree import Tree
+from nltk.corpus import wordnet
 nltk.download('omw-1.4')
 nltk.download('punkt')
 nltk.download('averaged_perceptron_tagger')
 nltk.download('maxent_ne_chunker')
 nltk.download('words')
 nltk.download('wordnet')
-
 
 
 class redactFiles:
@@ -293,11 +291,11 @@ class redactFiles:
             _lowerCase = words.lower()
             _capitalize = words.capitalize()
             _upperCase = words.upper()
-            _prural = pattern.en.pluralize(words)
+            # _prural = pattern.en.pluralize(words)
             conceptWords.append(_lowerCase)
             conceptWords.append(_capitalize)
             conceptWords.append(_upperCase)
-            conceptWords.append(_prural)
+            # conceptWords.append(_prural)
         if not (concept in conceptWords):
             conceptWords.append(concept)
         try:
