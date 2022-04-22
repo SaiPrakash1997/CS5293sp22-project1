@@ -32,10 +32,6 @@ def redactor(args):
             print(f"\n*************************************\t{fileName}\t************************************************************")
             if fileName == "requirements.txt":
                 continue
-            # if fileName[-1] == "t" and fileName[-2] == "x" and fileName[-3] == "t" and fileName[-4] == "." and fileName[-5] == "t" and fileName[-6] == "a" and fileName[-7] == "t" and fileName[-8] == "s":
-            #     continue
-            # if fileName[-1] == "t" and fileName[-2] == "x" and fileName[-3] == "t" and fileName[-4] == "." and fileName[-5] == "s" and fileName[-6] == "t" and fileName[-7] == "a" and fileName[-8] == "t" and fileName[-9] == "s":
-            #     continue
             if 'stats.txt' in fileName:
                 continue
             if 'stat.txt' in fileName:
