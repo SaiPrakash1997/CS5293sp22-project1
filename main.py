@@ -368,19 +368,6 @@ class redactFiles:
                 addressStartWord = address[0]+address[1]+address[2]
                 addressEndWord = address[-5]+address[-4]+address[-3]+address[-2]+address[-1]
                 content = re.sub(addressStartWord+".*[\n]*.*[\n]*.*[\n]*.*[\n]*.*"+addressEndWord, "█" * len(address), content)
-                # if word in content:
-                #     count += 1
-                #     content = content.replace(word, "█" * len(word))
-            # if count == 0 and len(toReplaceList) > 0:
-            #     exceptionalCase = []
-            #     for word in toReplaceList:
-            #         exceptionalCase.append(word.split(","))
-            #     exceptionalCase = nltk.flatten(exceptionalCase)
-            #     for word in exceptionalCase:
-            #         word = word.strip()
-            #         if word in content:
-            #             content = content.replace(word, "█" * len(word))
-            #     count = len(toReplaceList)
             if args.stats == 'stdout':
                 sys.stdout.write("\n Total number of address redacted:  " + str(count))
             elif args.stats == 'stderr':
