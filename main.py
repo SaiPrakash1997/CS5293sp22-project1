@@ -2,7 +2,6 @@ import re
 import pyap
 import sys
 import en_core_web_lg
-# from pattern import en
 import nltk
 from nltk.tree import Tree
 from nltk.corpus import wordnet
@@ -291,11 +290,9 @@ class redactFiles:
             _lowerCase = words.lower()
             _capitalize = words.capitalize()
             _upperCase = words.upper()
-            # _prural = pattern.en.pluralize(words)
             conceptWords.append(_lowerCase)
             conceptWords.append(_capitalize)
             conceptWords.append(_upperCase)
-            # conceptWords.append(_prural)
         if not (concept in conceptWords):
             conceptWords.append(concept)
         try:
