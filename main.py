@@ -1,6 +1,5 @@
 import nltk
 import pattern
-import spacy
 from nltk.tree import Tree
 from nltk.corpus import wordnet
 import re
