@@ -1,7 +1,5 @@
-# cs5293sp22-project1
-Name: Sai Prakash Davuluri
-
-Goal: The aim of the project is to use the knowledge of Python and Text Analytics to develop a system that accepts plain text documents then detect and redact 
+## Goal
+The aim of the project is to use the knowledge of Python and Text Analytics to develop a system that accepts plain text documents then detect and redact 
 "sensitive items".
 
 ## How to run the application
